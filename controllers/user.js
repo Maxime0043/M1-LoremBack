@@ -52,3 +52,48 @@ exports.register = async function (req, res) {
     });
   });
 };
+
+/**
+ * Function that will be used for the "/api/v1/user/login" route.
+ * Allows a user to login.
+ */
+exports.login = async function (req, res) {
+  const payload = req.body;
+  const schema = joi.object({
+    email: joi.string().max(255).required().email(),
+    password: joi.string().min(6).max(255).required(),
+  });
+
+  const { value: connexion, error } = schema.validate(payload);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  // We search in the database
+  const account = await User.findOne({ email: connexion.email });
+  if (!account) return res.status(400).json({ error: "Email Invalid !" });
+
+  // We need to compare the hashes
+  const passwordHashed = await bcrypt.compare(
+    connexion.password,
+    account.password
+  );
+  if (!passwordHashed)
+    return res.status(400).json({ error: "Invalid password !" });
+
+  // We return a JWT
+  const token = jwt.sign(
+    {
+      id: account._id,
+      email: account.email,
+      lastname: account.lastname,
+      firstname: account.firstname,
+    },
+    process.env.JWT_PRIVATE_KEY
+  );
+  res.status(200).json({
+    token: token,
+    id: account._id,
+    email: account.email,
+    lastname: account.lastname,
+    firstname: account.firstname,
+  });
+};
