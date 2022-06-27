@@ -1,6 +1,6 @@
 module.exports = {
   groups: require("./groups"),
-  posts: require("./posts"),
+  articles: require("./articles"),
   users: require("./users"),
   requests: require("./requests"),
 };

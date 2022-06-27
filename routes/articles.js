@@ -1,9 +1,9 @@
 const express = require("express");
-const Post = require("../controllers").post;
+const Article = require("../controllers").article;
 const router = express.Router();
 
 // Example how to use a controller
 
-router.post("/", Post.create);
+router.post("/", Article.create);
 
 module.exports = router;
