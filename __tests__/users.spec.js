@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
-
 const app = require("../app");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
