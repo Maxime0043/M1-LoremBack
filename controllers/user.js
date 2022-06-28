@@ -57,6 +57,7 @@ exports.register = async function (req, res) {
       lastname: account.lastname,
       firstname: account.firstname,
       email: account.email,
+      role: account.role,
     });
   });
 };
