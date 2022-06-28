@@ -16,6 +16,13 @@ if (!process.env.JWT_PRIVATE_KEY) {
 const { User } = require("../database/models/User.model");
 
 /**
+ * Allows you to retrieve the information of the connected user.
+ */
+exports.account = async function (req, res) {
+  res.status(200).json(req.user);
+};
+
+/**
  * Function that will be used for the "/api/v1/user/register" route.
  * Register a new user in the database.
  */
