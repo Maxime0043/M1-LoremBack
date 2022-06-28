@@ -146,6 +146,42 @@ describe("Group API", () => {
         .get(`${groupRoute}/dvfdscnjodz`)
         .expect(400);
     });
+
+    test("Method PUT \t-> Valid ID and Valid DATA", async () => {
+      const response = await supertest(app)
+        .put(`${groupRoute}/${groupTest._id}`)
+        .send({
+          title: "titre modifié",
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(response.text);
+      expect(data.title).toBe("titre modifié");
+    });
+
+    test("Method PUT \t-> Invalid ID", () => {
+      return supertest(app)
+        .put(`${groupRoute}/zkjdfkjehfl`)
+        .send({
+          title: "test modifié",
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
+
+    test("Method PUT \t-> Invalid DATA", () => {
+      return supertest(app)
+        .put(`${groupRoute}/${groupTest._id}`)
+        .send({
+          titl: "test modifié",
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
   });
 
   describe(`Route ${groupRoute}/editor/:id`, () => {
