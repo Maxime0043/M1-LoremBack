@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
-
 const app = require("../app");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
@@ -24,6 +22,21 @@ describe("User API", () => {
   afterAll(async () => {
     await User.deleteMany({});
     await mongoose.connection.close();
+  });
+
+  describe("Initial verification", () => {
+    test("The JWT exists", () => {
+      expect(process.env.JWT_PRIVATE_KEY);
+    });
+
+    test("The JWT does not exist", () => {
+      const backup = process.env.JWT_PRIVATE_KEY;
+      process.env.JWT_PRIVATE_KEY = undefined;
+
+      expect(!process.env.JWT_PRIVATE_KEY);
+
+      process.env.JWT_PRIVATE_KEY = backup;
+    });
   });
 
   describe(`Route ${userRoute}/register`, () => {
@@ -63,11 +76,15 @@ describe("User API", () => {
 
       const data = JSON.parse(res.text);
 
-      expect(data.email).toBe("test@test.fr");
-
       let user = await User.findOne({
         email: data.email,
       });
+
+      expect(data.lastname).toBe(user.lastname);
+      expect(data.firstname).toBe(user.firstname);
+      expect(data.email).toBe(user.email);
+      expect(data.role).toBe(user.role);
+
       userTest = user;
     });
 
@@ -176,6 +193,13 @@ describe("User API", () => {
       const data = JSON.parse(res.text);
 
       expect(data.email).toBe("test@test.fr");
+    });
+
+    test("Method GET\t -> Without token", async () => {
+      const res = await supertest(app)
+        .get(userRoute + "/account")
+        .expect(401)
+        .expect("Content-Type", /json/);
     });
 
     test("Method GET\t -> Invalid token", async () => {
