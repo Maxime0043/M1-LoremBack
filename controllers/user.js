@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 // JWT + dotenv + check for the presence of an environment variable
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+
 if (!process.env.JWT_PRIVATE_KEY) {
   console.log(
     "You must create an .env file that contains the variable JWT_PRIVATE_KEY"
@@ -14,6 +15,13 @@ if (!process.env.JWT_PRIVATE_KEY) {
 
 // Import Model
 const { User } = require("../database/models/User.model");
+
+/**
+ * Allows you to retrieve the information of the connected user.
+ */
+exports.account = async function (req, res) {
+  res.status(200).json(req.user);
+};
 
 /**
  * Function that will be used for the "/api/v1/user/register" route.
@@ -86,6 +94,7 @@ exports.login = async function (req, res) {
       email: account.email,
       lastname: account.lastname,
       firstname: account.firstname,
+      role: account.role,
     },
     process.env.JWT_PRIVATE_KEY
   );
@@ -95,5 +104,6 @@ exports.login = async function (req, res) {
     email: account.email,
     lastname: account.lastname,
     firstname: account.firstname,
+    role: account.role,
   });
 };
