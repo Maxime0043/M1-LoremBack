@@ -94,6 +94,7 @@ exports.login = async function (req, res) {
       email: account.email,
       lastname: account.lastname,
       firstname: account.firstname,
+      role: account.role,
     },
     process.env.JWT_PRIVATE_KEY
   );
@@ -103,5 +104,6 @@ exports.login = async function (req, res) {
     email: account.email,
     lastname: account.lastname,
     firstname: account.firstname,
+    role: account.role,
   });
 };
