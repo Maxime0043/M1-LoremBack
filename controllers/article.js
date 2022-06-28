@@ -1,6 +1,31 @@
 const { Article } = require("../database/models/Article.model");
+const Joi = require("joi");
 
 exports.getAll = async function (req, res) {
   const articles = await Article.find();
   res.status(200).json(articles);
+};
+
+exports.create = async function (req, res) {
+  const payload = req.body;
+  const user = req.user;
+  const schema = Joi.object({
+    title: Joi.string().min(3).required(),
+    image: Joi.string().min(2).required(),
+    content: Joi.string().min(50).required(),
+  });
+
+  const { value: article, error } = schema.validate(payload);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  Article.create(
+    {
+      ...article,
+      id_author: user.id,
+    },
+    function (_, article) {
+      // saved!
+      res.status(201).json(article);
+    }
+  );
 };
