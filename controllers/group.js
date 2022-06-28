@@ -1,12 +1,13 @@
 const joi = require("joi");
 // Import Model
 const { Group } = require("../database/models/Group.model");
+const { Article } = require("../database/models/Article.model");
 
 /**
  * Allows you to retrieve all groups of editors.
  */
 exports.getAll = async function (req, res) {
-  res.status(200).json(await Group.find({}));
+  res.status(200).json(await Group.find({}).populate("articles"));
 };
 
 /**
@@ -14,7 +15,7 @@ exports.getAll = async function (req, res) {
  */
 exports.get = async function (req, res) {
   const groupId = req.params.id;
-  res.status(200).json(await Group.findById(groupId));
+  res.status(200).json(await Group.findById(groupId).populate("articles"));
 };
 
 /**
@@ -22,7 +23,9 @@ exports.get = async function (req, res) {
  */
 exports.getFromEditor = async function (req, res) {
   const editorId = req.params.id;
-  res.status(200).json(await Group.find({ id_editor: editorId }));
+  res
+    .status(200)
+    .json(await Group.find({ id_editor: editorId }).populate("articles"));
 };
 
 /**
