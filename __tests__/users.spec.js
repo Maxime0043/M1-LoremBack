@@ -11,6 +11,7 @@ const { User } = require("../database/models/User.model");
 const { Role } = require("../database/enum");
 
 const userRoute = "/api/v1/user";
+let token;
 
 describe("User API", () => {
   beforeAll(async () => {
@@ -143,6 +144,8 @@ describe("User API", () => {
 
       expect(data.token);
       expect(data.email).toBe("test@test.fr");
+
+      token = data.token;
     });
 
     test.each([
@@ -160,5 +163,27 @@ describe("User API", () => {
           .expect(400);
       }
     );
+  });
+
+  describe(`Route ${userRoute}/account`, () => {
+    test("Method GET\t", async () => {
+      const res = await supertest(app)
+        .get(userRoute + "/account")
+        .set("authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.email).toBe("test@test.fr");
+    });
+
+    test("Method GET\t -> Invalid token", async () => {
+      const res = await supertest(app)
+        .get(userRoute + "/account")
+        .set("authorization", "Bearer Q5F6Q8Z7F8QZF09QZF")
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
   });
 });
