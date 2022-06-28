@@ -106,4 +106,59 @@ describe("User API", () => {
       }
     );
   });
+
+  describe(`Route ${userRoute}/login`, () => {
+    test("Method GET \t-> Undefined method", async () => {
+      const res = await supertest(app)
+        .get(userRoute + "/login")
+        .expect(404)
+        .expect("Content-Type", /html/);
+    });
+
+    test("Method PUT \t-> Undefined method", async () => {
+      const res = await supertest(app)
+        .put(userRoute + "/login")
+        .expect(404)
+        .expect("Content-Type", /html/);
+    });
+
+    test("Method DELETE \t-> Undefined method", async () => {
+      const res = await supertest(app)
+        .delete(userRoute + "/login")
+        .expect(404)
+        .expect("Content-Type", /html/);
+    });
+
+    test("Method POST \t-> Valid DATA", async () => {
+      const res = await supertest(app)
+        .post(userRoute + "/login")
+        .send({
+          email: "test@test.fr",
+          password: "jesuisunmotdepasse",
+        })
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.token);
+      expect(data.email).toBe("test@test.fr");
+    });
+
+    test.each([
+      { email: "fauxmail@test.fr", password: "test" },
+      { email: "test@test.fr", password: "fauxMotDePasse" },
+      { email: "test@test.fr" },
+      { password: "fauxMotDePasse" },
+      {},
+    ])(
+      "Method POST \t-> Invalid DATA : Should refuse %p. Invalid DATA",
+      async (invalidObject) => {
+        const result = await supertest(app)
+          .post(userRoute + "/login")
+          .send(invalidObject)
+          .expect(400);
+      }
+    );
+  });
 });
