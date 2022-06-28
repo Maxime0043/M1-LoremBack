@@ -29,3 +29,11 @@ exports.create = async function (req, res) {
     }
   );
 };
+
+exports.get = async function (req, res) {
+  const { id } = req.params;
+  const article = await Article.findById(id);
+  if (!article) return res.status(400).json({ error: "Invalid Article Id !" });
+
+  res.status(200).json(article);
+};
