@@ -3,9 +3,6 @@ const express = require("express");
 // Bcrypt is asynchronous
 require("express-async-errors");
 
-// Connect to MongoDB
-require("./database/connection");
-
 // Initialization of Express
 const app = express();
 const cors = require("cors");
