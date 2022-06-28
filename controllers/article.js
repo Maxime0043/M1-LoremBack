@@ -2,11 +2,17 @@ const { Article } = require("../database/models/Article.model");
 const { RequestState } = require("../database/enum");
 const Joi = require("joi");
 
+/**
+ * Get all articles
+ */
 exports.getAll = async function (req, res) {
   const articles = await Article.find();
   res.status(200).json(articles);
 };
 
+/**
+ * Create a new article
+ */
 exports.create = async function (req, res) {
   const payload = req.body;
   const user = req.user;
@@ -31,6 +37,9 @@ exports.create = async function (req, res) {
   );
 };
 
+/**
+ * Get an article by id
+ */
 exports.get = async function (req, res) {
   const { id } = req.params;
   const article = await Article.findById(id);
@@ -39,6 +48,9 @@ exports.get = async function (req, res) {
   res.status(200).json(article);
 };
 
+/**
+ * Update an article by id
+ */
 exports.update = async function (req, res) {
   const { id } = req.params;
   const payload = req.body;
@@ -66,6 +78,9 @@ exports.update = async function (req, res) {
   res.status(200).json(await Article.findById(id));
 };
 
+/**
+ * Delete an article by id
+ */
 exports.delete = async function (req, res) {
   const { id } = req.params;
   const user = req.user;
