@@ -65,3 +65,18 @@ exports.update = async function (req, res) {
   const article = await oldArticle.updateOne(newArticle);
   res.status(200).json(await Article.findById(id));
 };
+
+exports.delete = async function (req, res) {
+  const { id } = req.params;
+  const user = req.user;
+
+  const article = await Article.findById(id);
+  if (!article) return res.status(400).json({ error: "Invalid Article Id !" });
+  if (article.id_author.toString() !== user.id)
+    return res
+      .status(400)
+      .json({ error: "User is not the owner of the article !" });
+
+  const result = await article.delete();
+  res.status(200).json(result);
+};
