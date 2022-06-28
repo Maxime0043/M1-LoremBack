@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 // JWT + dotenv + check for the presence of an environment variable
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+
 if (!process.env.JWT_PRIVATE_KEY) {
   console.log(
     "You must create an .env file that contains the variable JWT_PRIVATE_KEY"
