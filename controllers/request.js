@@ -110,7 +110,7 @@ exports.cancel = async function (req, res) {
     let article = await Article.findById(request.id_article);
 
     if (article.id_author.toString() === user.id) {
-      await article.update({
+      await article.updateOne({
         published: RequestState.NOT_PUBLISHED,
       });
       return res.status(200).json(await request.delete());
