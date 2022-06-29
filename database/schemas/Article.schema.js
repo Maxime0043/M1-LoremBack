@@ -29,7 +29,7 @@ module.exports.ArticleSchema = new mongoose.Schema({
   published: {
     type: String,
     enum: RequestState,
-    default: RequestState.IN_WAIT,
+    default: RequestState.NOT_PUBLISHED,
     required: true,
   },
   id_group: {
