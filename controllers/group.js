@@ -23,7 +23,7 @@ exports.get = async function (req, res) {
  * Allows you to retrieve all the groups of an editor.
  */
 exports.getFromEditor = async function (req, res) {
-  const editorId = req.params.id;
+  const editorId = req.editorId;
   res
     .status(200)
     .json(await Group.find({ id_editor: editorId }).populate("articles"));
@@ -88,7 +88,7 @@ exports.update = async function (req, res) {
 };
 
 /**
- * Allows you to add an item to a group.
+ * Allows you to add an article to a group.
  */
 exports.insertArticle = async function (req, res) {
   const groupId = req.params.id;

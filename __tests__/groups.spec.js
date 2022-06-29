@@ -265,10 +265,11 @@ describe("Group API", () => {
     });
   });
 
-  describe(`Route ${groupRoute}/editor/:id`, () => {
-    test("Method GET \t-> Valid ID", async () => {
+  describe(`Route ${groupRoute}/editor/`, () => {
+    test("Method GET \t-> Valid token", async () => {
       const res = await supertest(app)
-        .get(`${groupRoute}/editor/${userTest.id}`)
+        .get(`${groupRoute}/editor`)
+        .set("authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /json/);
 
@@ -278,10 +279,15 @@ describe("Group API", () => {
       expect(group.id_editor).toBe(userTest._id);
     });
 
-    test("Method GET \t-> undefined ID", async () => {
+    test("Method GET \t-> undefined token", async () => {
       const res = await supertest(app)
-        .get(`${groupRoute}/editor/zkjfgkrgeou`)
+        .get(`${groupRoute}/editor`)
+        .set("authorization", `Bearer ozihdoihzqildhqozd`)
         .expect(400);
+    });
+
+    test("Method GET \t-> Without token", async () => {
+      const res = await supertest(app).get(`${groupRoute}/editor`).expect(401);
     });
   });
 });
