@@ -19,4 +19,6 @@ router.post(
 
 router.put("/:id", [authGuard, validGroup, editorsGroup], Group.update);
 
+router.delete("/:id", [authGuard, validGroup, editorsGroup], Group.delete);
+
 module.exports = router;
