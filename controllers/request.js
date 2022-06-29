@@ -104,6 +104,9 @@ exports.cancel = async function (req, res) {
     let article = await Article.findById(request.id_article);
 
     if (article.id_author.toString() === user.id) {
+      await article.update({
+        published: RequestState.NOT_PUBLISHED,
+      });
       return res.status(200).json(await request.delete());
     } else
       return res
@@ -122,6 +125,9 @@ exports.refuse = async function (req, res) {
     let group = await Group.findById(request.id_group);
 
     if (group.id_editor.toString() === user.id) {
+      await Article.findByIdAndUpdate(request.id_article.toString(), {
+        published: RequestState.NOT_PUBLISHED,
+      });
       return res.status(200).json(await request.delete());
     } else
       return res
