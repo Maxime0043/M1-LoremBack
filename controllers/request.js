@@ -2,7 +2,7 @@ const { Request } = require("../database/models/Request.model");
 const { Article } = require("../database/models/Article.model");
 const { Group } = require("../database/models/Group.model");
 const Joi = require("joi");
-const { Role } = require("../database/enum");
+const { Role, RequestState } = require("../database/enum");
 const ObjectID = require("mongoose").Types.ObjectId;
 
 /**
@@ -61,4 +61,35 @@ exports.getAll = async function (req, res) {
   } else {
     return res.status(400).json({ error: "User role not valid !" });
   }
+};
+
+exports.valid = async function (req, res) {
+  const { id } = req.params;
+  const user = req.user;
+
+  if (ObjectID.isValid(id)) {
+    const request = await Request.findById(id);
+
+    let group = await Group.findById(request.id_group);
+
+    if (group.id_editor.toString() === user.id) {
+      const article = await Article.findByIdAndUpdate(
+        request.id_article.toString(),
+        {
+          published: RequestState.PUBLISHED,
+          id_group: request.id_group.toString(),
+          published_at: Date.now(),
+        }
+      );
+
+      group = await Group.findByIdAndUpdate(request.id_group.toString(), {
+        articles: [...group.articles, request.id_article.toString()],
+      });
+
+      return res.status(200).json(await request.delete());
+    } else
+      return res
+        .status(400)
+        .json({ error: "User is not the owner of the group !" });
+  } else return res.status(400).json({ error: "Request ID invalid !" });
 };

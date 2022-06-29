@@ -10,6 +10,7 @@ const { Role } = require("../database/enum");
 
 let tokenAuthor = "";
 let tokenEditor = "";
+let tokenEditor2 = "";
 let tokenInvalidRole =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYmIxM2E3NTZiNzhkMmM5Mzg0NWExZCIsImVtYWlsIjoiZXphQGV6YS5mciIsImxhc3RuYW1lIjoiZXphIiwiZmlyc3RuYW1lIjoiZXphIiwicm9sZSI6Im5vdCB2YWxpZCIsImlhdCI6MTY1NjUwMzU2OX0.TSUVJtDCga7TR1ICZ0FU3VA3z9A5H0qdE_I5uNU-jWw";
 
@@ -47,6 +48,30 @@ describe("Request API", () => {
 
     const dataEditor = JSON.parse(resEditor.text);
     tokenEditor = dataEditor.token;
+
+    await supertest(app)
+      .post("/api/v1/user/register")
+      .send({
+        lastname: "jean",
+        firstname: "jean",
+        email: "testeditor2@test.fr",
+        password: "jesuisunmotdepasse",
+        role: Role.EDITOR,
+      })
+      .expect(201)
+      .expect("Content-Type", /json/);
+
+    const resEditor2 = await supertest(app)
+      .post("/api/v1/user/login")
+      .send({
+        email: "testeditor2@test.fr",
+        password: "jesuisunmotdepasse",
+      })
+      .expect(200)
+      .expect("Content-Type", /json/);
+
+    const dataEditor2 = JSON.parse(resEditor2.text);
+    tokenEditor2 = dataEditor2.token;
 
     await supertest(app)
       .post("/api/v1/user/register")
@@ -240,6 +265,48 @@ describe("Request API", () => {
       const data = JSON.parse(res.text);
 
       expect(data.error).toBe("User role not valid !");
+    });
+  });
+
+  describe("Route /api/v1/request/:id/valid", () => {
+    let request = "";
+
+    test("Method POST\t -> Invalid User", async () => {
+      const res = await supertest(app)
+        .post(`/api/v1/request/${idRequest}/valid`)
+        .set("authorization", `Bearer ${tokenEditor2}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("User is not the owner of the group !");
+    });
+
+    test("Method POST\t -> Invalid User", async () => {
+      const res = await supertest(app)
+        .post(`/api/v1/request/${idRequest}4/valid`)
+        .set("authorization", `Bearer ${tokenEditor}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("Request ID invalid !");
+    });
+
+    test("Method POST\t -> Valid DATA", async () => {
+      request = await Request.findById(idRequest);
+      const res = await supertest(app)
+        .post(`/api/v1/request/${idRequest}/valid`)
+        .set("authorization", `Bearer ${tokenEditor}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject(request);
     });
   });
 });
