@@ -9,6 +9,7 @@ const { Article } = require("../database/models/Article.model");
 const { Role } = require("../database/enum");
 
 let tokenAuthor = "";
+let tokenAuthor2 = "";
 let tokenEditor = "";
 let tokenEditor2 = "";
 let tokenInvalidRole =
@@ -96,6 +97,30 @@ describe("Request API", () => {
 
     const dataUser = JSON.parse(resAuthor.text);
     tokenAuthor = dataUser.token;
+
+    await supertest(app)
+      .post("/api/v1/user/register")
+      .send({
+        lastname: "jean",
+        firstname: "jean",
+        email: "testauthor2@test.fr",
+        password: "jesuisunmotdepasse",
+        role: Role.AUTHOR,
+      })
+      .expect(201)
+      .expect("Content-Type", /json/);
+
+    const resAuthor2 = await supertest(app)
+      .post("/api/v1/user/login")
+      .send({
+        email: "testauthor2@test.fr",
+        password: "jesuisunmotdepasse",
+      })
+      .expect(200)
+      .expect("Content-Type", /json/);
+
+    const dataUser2 = JSON.parse(resAuthor2.text);
+    tokenAuthor2 = dataUser2.token;
 
     const resArticle = await supertest(app)
       .post("/api/v1/article")
@@ -269,8 +294,6 @@ describe("Request API", () => {
   });
 
   describe("Route /api/v1/request/:id/valid", () => {
-    let request = "";
-
     test("Method POST\t -> Invalid User", async () => {
       const res = await supertest(app)
         .post(`/api/v1/request/${idRequest}/valid`)
@@ -296,10 +319,69 @@ describe("Request API", () => {
     });
 
     test("Method POST\t -> Valid DATA", async () => {
-      request = await Request.findById(idRequest);
+      let request = await Request.findById(idRequest);
       const res = await supertest(app)
         .post(`/api/v1/request/${idRequest}/valid`)
         .set("authorization", `Bearer ${tokenEditor}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject(request);
+    });
+  });
+
+  describe("Route /api/v1/request/:id/cancel", () => {
+    beforeAll(async () => {
+      const response = await supertest(app)
+        .post("/api/v1/request")
+        .send({
+          id_article: idArticle,
+          id_group: idGroup,
+        })
+        .set("authorization", `Bearer ${tokenAuthor}`)
+        .expect(201)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(response.text);
+      let request = await Request.findById(data._id);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject(request);
+      idRequest = data._id;
+    });
+
+    test("Method POST\t -> Invalid User", async () => {
+      const res = await supertest(app)
+        .delete(`/api/v1/request/${idRequest}/cancel`)
+        .set("authorization", `Bearer ${tokenAuthor2}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("User is not the owner of the article !");
+    });
+
+    test("Method POST\t -> Invalid User", async () => {
+      const res = await supertest(app)
+        .delete(`/api/v1/request/${idRequest}4/cancel`)
+        .set("authorization", `Bearer ${tokenAuthor}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("Request ID invalid !");
+    });
+
+    test("Method POST\t -> Valid DATA", async () => {
+      request = await Request.findById(idRequest);
+      const res = await supertest(app)
+        .delete(`/api/v1/request/${idRequest}/cancel`)
+        .set("authorization", `Bearer ${tokenAuthor}`)
         .expect(200)
         .expect("Content-Type", /json/);
 
