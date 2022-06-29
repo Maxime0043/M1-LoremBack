@@ -201,6 +201,25 @@ describe("Group API", () => {
   });
 
   describe(`Route ${groupRoute}/:id/article`, () => {
+    test("Method GET \t-> Valid ID", async () => {
+      const res = await supertest(app)
+        .get(`${groupRoute}/${groupTest._id}/article`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      const group = await Group.findById(groupTest._id);
+      const articles = JSON.parse(JSON.stringify(group.articles));
+
+      expect(data).toMatchObject(articles);
+    });
+
+    test("Method GET \t-> undefined ID", async () => {
+      const res = await supertest(app)
+        .get(`${groupRoute}/dvfdscnjodz/article`)
+        .expect(400);
+    });
+
     test("Method POST \t-> Valid DATA and Valid token", async () => {
       const res = await supertest(app)
         .post(`${groupRoute}/${groupTest._id}/article`)
