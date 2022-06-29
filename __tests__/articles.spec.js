@@ -12,6 +12,13 @@ const { User } = require("../database/models/User.model");
 
 let token1 = "";
 let token2 = "";
+let token3 = "";
+
+const invalidToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYmMwMTU1MTc3NmI5OWU2NjRlYjc1MyIsImVtYWlsIjoidGVzdEB0ZXN0LmZyIiwibGFzdG5hbWUiOiJqZWFuIiwiZmlyc3RuYW1lIjoiamVhbiIsInJvbGUiOiJhdXRob3IiLCJpYXQiOjE2NTY0ODgyNzh9.zLuZIlPUvxPxnu6As6TBWCrmCY-ZEnlmxLwsJQewEjQ";
+
+const fakeToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InByb3V0IiwiZW1haWwiOiJ0ZXN0QHRlc3QuZnIiLCJsYXN0bmFtZSI6ImplYW4iLCJmaXJzdG5hbWUiOiJqZWFuIiwicm9sZSI6ImF1dGhvciIsImlhdCI6MTY1NjQ4ODY3OX0.-t6PvXMxqNgSymDdbNHLsbPNcuUAj1Q1ceFxD8r8f9I";
 
 let idArticle1 = "";
 let idArticle2 = "";
@@ -22,6 +29,9 @@ describe("Article API", () => {
       .connect(process.env.TEST_DATABASE_URL)
       .then(() => console.log("Connected to mongo"))
       .catch((err) => console.error("Failed to connect to mongo, ", err));
+
+    await User.deleteMany({});
+    await Article.deleteMany({});
 
     await supertest(app)
       .post("/api/v1/user/register")
@@ -70,6 +80,30 @@ describe("Article API", () => {
 
     const data2 = JSON.parse(res2.text);
     token2 = data2.token;
+
+    await supertest(app)
+      .post("/api/v1/user/register")
+      .send({
+        lastname: "jean",
+        firstname: "jean",
+        email: "test3@test.fr",
+        password: "jesuisunmotdepasse",
+        role: Role.EDITOR,
+      })
+      .expect(201)
+      .expect("Content-Type", /json/);
+
+    const res3 = await supertest(app)
+      .post("/api/v1/user/login")
+      .send({
+        email: "test3@test.fr",
+        password: "jesuisunmotdepasse",
+      })
+      .expect(200)
+      .expect("Content-Type", /json/);
+
+    const data3 = JSON.parse(res3.text);
+    token3 = data3.token;
   });
 
   afterAll(async () => {
@@ -148,6 +182,20 @@ describe("Article API", () => {
         .expect(400)
         .expect("Content-Type", /json/);
     });
+
+    test("Method POST \t-> Invalid User Role", async () => {
+      const response = await supertest(app)
+        .post("/api/v1/article")
+        .send({
+          title: "Titre",
+          image: "https://picsum.photos/200/300",
+          content:
+            "CONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENTCONTENT",
+        })
+        .set("authorization", `Bearer ${token3}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
   });
 
   describe("Route /api/v1/article/:id", () => {
@@ -182,6 +230,36 @@ describe("Article API", () => {
       const data = JSON.parse(response.text);
 
       expect(data.error).toBe("Invalid Article Id !");
+    });
+
+    test("Method PUT \t-> Invalid Token", async () => {
+      const response = await supertest(app)
+        .put(`/api/v1/article/${idArticle1}`)
+        .set("authorization", `Bearer ${invalidToken}`)
+        .send({
+          title: "Titre B",
+        })
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(response.text);
+
+      expect(data.error).toBe("Invalid Token !");
+    });
+
+    test("Method PUT \t-> Invalid user id inside Token", async () => {
+      const response = await supertest(app)
+        .put(`/api/v1/article/${idArticle1}`)
+        .set("authorization", `Bearer ${fakeToken}`)
+        .send({
+          title: "Titre B",
+        })
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(response.text);
+
+      expect(data.error).toBe("Id must be valid !");
     });
 
     test("Method PUT \t-> Valid DATA", async () => {
