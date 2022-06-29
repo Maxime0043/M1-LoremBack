@@ -152,6 +152,10 @@ describe("Article API", () => {
         .expect("Content-Type", /json/);
 
       const data = JSON.parse(response.text);
+      let article1 = await Article.findById(data._id);
+      article1 = JSON.parse(JSON.stringify(article1));
+
+      expect(data).toMatchObject(article1);
       idArticle1 = data._id;
 
       const response2 = await supertest(app)
@@ -167,6 +171,10 @@ describe("Article API", () => {
         .expect("Content-Type", /json/);
 
       const data2 = JSON.parse(response2.text);
+      let article = await Article.findById(data2._id);
+      article = JSON.parse(JSON.stringify(article));
+
+      expect(data2).toMatchObject(article);
       idArticle2 = data2._id;
     });
 
