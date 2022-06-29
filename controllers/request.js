@@ -63,6 +63,9 @@ exports.getAll = async function (req, res) {
   }
 };
 
+/**
+ * Validate a request
+ */
 exports.valid = async function (req, res) {
   const { id } = req.params;
   const user = req.user;
@@ -94,6 +97,9 @@ exports.valid = async function (req, res) {
   } else return res.status(400).json({ error: "Request ID invalid !" });
 };
 
+/**
+ * Cancel a request (Author user)
+ */
 exports.cancel = async function (req, res) {
   const { id } = req.params;
   const user = req.user;
@@ -115,6 +121,9 @@ exports.cancel = async function (req, res) {
   } else return res.status(400).json({ error: "Request ID invalid !" });
 };
 
+/**
+ * Refuse a request (Editor user)
+ */
 exports.refuse = async function (req, res) {
   const { id } = req.params;
   const user = req.user;
