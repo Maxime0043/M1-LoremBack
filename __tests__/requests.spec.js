@@ -5,6 +5,7 @@ const supertest = require("supertest");
 const mongoose = require("mongoose");
 const { User } = require("../database/models/User.model");
 const { Request } = require("../database/models/Request.model");
+const { Group } = require("../database/models/Group.model");
 const { Article } = require("../database/models/Article.model");
 const { Role } = require("../database/enum");
 
@@ -154,6 +155,7 @@ describe("Request API", () => {
     await User.deleteMany({});
     await Article.deleteMany({});
     await Request.deleteMany({});
+    await Group.deleteMany({});
     await mongoose.connection.close();
   });
   describe("Route /api/v1/request", () => {
