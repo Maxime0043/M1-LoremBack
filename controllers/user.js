@@ -115,6 +115,8 @@ exports.login = async function (req, res) {
  */
 exports.getAllArticles = async function (req, res) {
   const user = req.user;
-  const articles = await Article.find({ id_author: user.id });
+  const articles = await Article.find({ id_author: user.id }).populate(
+    "id_group"
+  );
   res.status(200).json(articles);
 };
