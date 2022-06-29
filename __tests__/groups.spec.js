@@ -8,14 +8,17 @@ const mongoose = require("mongoose");
 const { Article } = require("../database/models/Article.model");
 const { Group } = require("../database/models/Group.model");
 const { User } = require("../database/models/User.model");
-const { Role } = require("../database/enum");
+const { Role, RequestState } = require("../database/enum");
 
 const groupRoute = "/api/v1/group";
+const articleRoute = "/api/v1/article";
+
 let groupTest;
 let articleTest;
 let userTest;
 let token;
 let token2;
+let authorToken;
 
 describe("Group API", () => {
   beforeAll(async () => {
@@ -76,7 +79,7 @@ describe("Group API", () => {
     });
 
     const authorData = JSON.parse(authorRes.text);
-    const authorToken = authorData.token;
+    authorToken = authorData.token;
 
     // Create Article
     const res3 = await supertest(app)
@@ -261,23 +264,6 @@ describe("Group API", () => {
         .expect(400);
     });
 
-    test("Method POST \t-> Valid DATA and Valid token", async () => {
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupTest._id}/article`)
-        .send({
-          id_article: articleTest._id,
-        })
-        .set("authorization", `Bearer ${token}`)
-        .expect(200)
-        .expect("Content-Type", /json/);
-
-      const data = JSON.parse(res.text);
-      let group = await Group.findById(data._id);
-      group = JSON.parse(JSON.stringify(group));
-
-      expect(data).toMatchObject(group);
-    });
-
     test("Method POST \t-> Valid DATA and Unvalid token", async () => {
       const res = await supertest(app)
         .post(`${groupRoute}/${groupTest._id}/article`)
@@ -340,6 +326,26 @@ describe("Group API", () => {
         .set("authorization", `Bearer ${token}`)
         .expect(400)
         .expect("Content-Type", /json/);
+    });
+
+    test("Method POST \t-> Valid DATA and Valid token", async () => {
+      const res = await supertest(app)
+        .post(`${groupRoute}/${groupTest._id}/article`)
+        .send({
+          id_article: articleTest._id,
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      let group = await Group.findById(data._id);
+      group = JSON.parse(JSON.stringify(group));
+
+      expect(data).toMatchObject(group);
+
+      // Update articleTest
+      articleTest = await Article.findById(articleTest._id);
     });
 
     test("Method PUT \t-> Undefined method", async () => {
@@ -427,6 +433,52 @@ describe("Group API", () => {
       const res = await supertest(app)
         .get(`${groupRoute}/editor`)
         .set("authorization", `Bearer ${userToken}`)
+        .expect(400);
+    });
+  });
+
+  describe(`Route ${groupRoute}/:id - METHOD DELETE ONLY`, () => {
+    test("Method DELETE \t-> Valid ID and Invalid token", async () => {
+      const res = await supertest(app)
+        .delete(`${groupRoute}/${groupTest._id}`)
+        .set("authorization", `Bearer qkuzgdkuqhdhqzid`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
+
+    test("Method DELETE \t-> Valid ID and Valid token", async () => {
+      // We delete our group
+      const res = await supertest(app)
+        .delete(`${groupRoute}/${groupTest._id}`)
+        .set("authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      let group = await Group.findById(groupTest._id);
+      group = JSON.parse(JSON.stringify(group));
+
+      expect(group).toBe(null);
+
+      // Initial verification
+      expect(articleTest.id_group.toString()).toBe(groupTest._id);
+
+      // We check that the article have been updated
+      const artRes = await supertest(app)
+        .get(`${articleRoute}/${articleTest.id}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const artData1Get = JSON.parse(artRes.text);
+
+      expect(artData1Get.published).toBe(RequestState.IN_WAIT);
+      expect(artData1Get.id_group).toBe(null);
+      expect(artData1Get.published_at).toBe(null);
+    });
+
+    test("Method DELETE \t-> Invalid ID", async () => {
+      const res = await supertest(app)
+        .delete(`${groupRoute}/62bc078c1e9759579c64c035`)
+        .set("authorization", `Bearer ${token}`)
         .expect(400);
     });
   });
