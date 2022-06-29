@@ -27,8 +27,6 @@ describe("Group API", () => {
       .then(() => console.log("Connected to mongo"))
       .catch((err) => console.error("Failed to connect to mongo, ", err));
 
-    await new Promise((r) => setTimeout(r, 2000));
-
     // Create an editor
     await supertest(app).post("/api/v1/user/register").send({
       lastname: "jean",
