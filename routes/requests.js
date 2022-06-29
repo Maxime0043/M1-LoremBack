@@ -1,12 +1,13 @@
 const express = require("express");
+const { authGuard } = require("../middlewares/auth.middleware");
 const {
   authGuardAuthor,
 } = require("../middlewares/authGuardAuthor.middleware");
-const Resquest = require("../controllers").request;
+const Request = require("../controllers").request;
 const router = express.Router();
 
-// Example how to use a controller
+router.post("/", [authGuardAuthor], Request.create);
 
-router.post("/", [authGuardAuthor], Resquest.create);
+router.get("/", [authGuard], Request.getAll);
 
 module.exports = router;

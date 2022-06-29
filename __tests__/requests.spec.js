@@ -10,9 +10,12 @@ const { Role } = require("../database/enum");
 
 let tokenAuthor = "";
 let tokenEditor = "";
+let tokenInvalidRole =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYmIxM2E3NTZiNzhkMmM5Mzg0NWExZCIsImVtYWlsIjoiZXphQGV6YS5mciIsImxhc3RuYW1lIjoiZXphIiwiZmlyc3RuYW1lIjoiZXphIiwicm9sZSI6Im5vdCB2YWxpZCIsImlhdCI6MTY1NjUwMzU2OX0.TSUVJtDCga7TR1ICZ0FU3VA3z9A5H0qdE_I5uNU-jWw";
 
 let idArticle = "";
 let idGroup = "";
+let idRequest = "";
 
 describe("Request API", () => {
   beforeAll(async () => {
@@ -20,10 +23,6 @@ describe("Request API", () => {
       .connect(process.env.TEST_DATABASE_URL)
       .then(() => console.log("Connected to mongo"))
       .catch((err) => console.error("Failed to connect to mongo, ", err));
-
-    await User.deleteMany({});
-    await Article.deleteMany({});
-    await Request.deleteMany({});
 
     await supertest(app)
       .post("/api/v1/user/register")
@@ -124,6 +123,7 @@ describe("Request API", () => {
       request = JSON.parse(JSON.stringify(request));
 
       expect(data).toMatchObject(request);
+      idRequest = data._id;
     });
 
     test("Method POST\t -> Invalid Data", async () => {
@@ -200,6 +200,46 @@ describe("Request API", () => {
       const data = JSON.parse(response.text);
 
       expect(data.error).toBe("Group not found");
+    });
+
+    test("Method GET\t -> Valid DATA Editor User", async () => {
+      const res = await supertest(app)
+        .get("/api/v1/request")
+        .set("authorization", `Bearer ${tokenEditor}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      let request = await Request.findById(idRequest);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject([request]);
+    });
+
+    test("Method GET\t -> Valid DATA Author User", async () => {
+      const res = await supertest(app)
+        .get("/api/v1/request")
+        .set("authorization", `Bearer ${tokenAuthor}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      let request = await Request.findById(idRequest);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject([request]);
+    });
+
+    test("Method GET\t -> Invalid User Role", async () => {
+      const res = await supertest(app)
+        .get("/api/v1/request")
+        .set("authorization", `Bearer ${tokenInvalidRole}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("User role not valid !");
     });
   });
 });
