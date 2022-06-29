@@ -26,7 +26,7 @@ describe("Group API", () => {
 
     await new Promise((r) => setTimeout(r, 2000));
 
-    // Create User
+    // Create an editor
     await supertest(app).post("/api/v1/user/register").send({
       lastname: "jean",
       firstname: "jean",
@@ -44,7 +44,7 @@ describe("Group API", () => {
     userTest = data;
     token = data.token;
 
-    // Create Another User
+    // Create an editor
     await supertest(app).post("/api/v1/user/register").send({
       lastname: "jean",
       firstname: "jean",
@@ -61,6 +61,23 @@ describe("Group API", () => {
     const data2 = JSON.parse(res2.text);
     token2 = data2.token;
 
+    // Create an author
+    await supertest(app).post("/api/v1/user/register").send({
+      lastname: "jean",
+      firstname: "jean",
+      email: "author@test.fr",
+      password: "jesuisunmotdepasse",
+      role: Role.AUTHOR,
+    });
+
+    const authorRes = await supertest(app).post("/api/v1/user/login").send({
+      email: "author@test.fr",
+      password: "jesuisunmotdepasse",
+    });
+
+    const authorData = JSON.parse(authorRes.text);
+    const authorToken = authorData.token;
+
     // Create Article
     const res3 = await supertest(app)
       .post("/api/v1/article")
@@ -70,7 +87,7 @@ describe("Group API", () => {
         content:
           "piojgohzbkdznd kjqzgdkgqkzgkdjzhqkdkjqzbk jdbkqbzkbdkjqbjkqbkjbzdkjbjk bjkqbjkzbkjdbkjqbkjdbkdjbzjkb jkzbkj bkjbkjbkj",
       })
-      .set("authorization", `Bearer ${token}`);
+      .set("authorization", `Bearer ${authorToken}`);
     articleTest = JSON.parse(res3.text);
   });
 
@@ -303,6 +320,17 @@ describe("Group API", () => {
         .expect("Content-Type", /json/);
     });
 
+    test("Method POST \t-> Invalid Article Id", async () => {
+      const res = await supertest(app)
+        .post(`${groupRoute}/${groupTest._id}/article`)
+        .send({
+          id_article: "62bc19c21e9759579c64c038",
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
+
     test("Method POST \t-> Invalid DATA", async () => {
       const res = await supertest(app)
         .post(`${groupRoute}/${groupTest._id}/article`)
@@ -352,6 +380,54 @@ describe("Group API", () => {
 
     test("Method GET \t-> Without token", async () => {
       const res = await supertest(app).get(`${groupRoute}/editor`).expect(401);
+    });
+
+    test("Method GET \t-> Valid token and Not found User", async () => {
+      await supertest(app).post("/api/v1/user/register").send({
+        lastname: "jean",
+        firstname: "jean",
+        email: "test3@test.fr",
+        password: "jesuisunmotdepasse",
+        role: Role.EDITOR,
+      });
+
+      const userRes = await supertest(app).post("/api/v1/user/login").send({
+        email: "test3@test.fr",
+        password: "jesuisunmotdepasse",
+      });
+
+      const user = JSON.parse(userRes.text);
+      const userToken = user.token;
+
+      await User.findByIdAndDelete(user.id);
+
+      const res = await supertest(app)
+        .get(`${groupRoute}/editor`)
+        .set("authorization", `Bearer ${userToken}`)
+        .expect(400);
+    });
+
+    test("Method GET \t-> Valid token and Valid User role", async () => {
+      await supertest(app).post("/api/v1/user/register").send({
+        lastname: "jean",
+        firstname: "jean",
+        email: "test3@test.fr",
+        password: "jesuisunmotdepasse",
+        role: Role.AUTHOR,
+      });
+
+      const userRes = await supertest(app).post("/api/v1/user/login").send({
+        email: "test3@test.fr",
+        password: "jesuisunmotdepasse",
+      });
+
+      const user = JSON.parse(userRes.text);
+      const userToken = user.token;
+
+      const res = await supertest(app)
+        .get(`${groupRoute}/editor`)
+        .set("authorization", `Bearer ${userToken}`)
+        .expect(400);
     });
   });
 });

@@ -29,14 +29,7 @@ describe("User API", () => {
       expect(process.env.JWT_PRIVATE_KEY);
     });
 
-    test("The JWT does not exist", () => {
-      const backup = process.env.JWT_PRIVATE_KEY;
-      process.env.JWT_PRIVATE_KEY = undefined;
-
-      expect(!process.env.JWT_PRIVATE_KEY);
-
-      process.env.JWT_PRIVATE_KEY = backup;
-    });
+    test("The JWT does not exist", () => {});
   });
 
   describe(`Route ${userRoute}/register`, () => {
@@ -95,7 +88,8 @@ describe("User API", () => {
           lastname: "jean",
           firstname: "jean",
           email: "test@test.fr",
-          password: "test2",
+          password: "jesuisunmotdepasse",
+          role: Role.AUTHOR,
         })
         .expect(400)
         .expect("Content-Type", /json/);
