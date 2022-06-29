@@ -1,8 +1,8 @@
 {
   "scripts": {
     "start": "nodemon index.js",
-    "test": "npx jest __tests__/*",
-    "coverage": "npx jest --coverage"
+    "test": "npx jest __tests__/* --runInBand",
+    "coverage": "npx jest --coverage --runInBand"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
