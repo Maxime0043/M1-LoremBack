@@ -44,8 +44,6 @@ exports.create = async function (req, res) {
 exports.getAll = async function (req, res) {
   const user = req.user;
 
-  console.log(user.role);
-
   if (user.role === Role.EDITOR) {
     const groups = await Group.find({ id_editor: user.id }, "id").exec();
     const tabGroups = groups.map((val) => val._id);
