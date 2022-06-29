@@ -13,9 +13,10 @@ if (!process.env.JWT_PRIVATE_KEY) {
   process.exit(1);
 }
 
-// Import Model
+// Import Model + enum
 const { User } = require("../database/models/User.model");
 const { Article } = require("../database/models/Article.model");
+const { Role } = require("../database/enum");
 
 /**
  * Allows you to retrieve the information of the connected user.
@@ -35,7 +36,7 @@ exports.register = async function (req, res) {
     firstname: joi.string().min(2).max(50).required(),
     email: joi.string().max(255).required().email(),
     password: joi.string().min(6).max(255).required(),
-    role: joi.string().min(1).required(),
+    role: joi.string().valid(...Object.values(Role)),
   });
 
   const { value: account, error } = schema.validate(payload);
