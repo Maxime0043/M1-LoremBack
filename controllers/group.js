@@ -3,6 +3,7 @@ const joi = require("joi");
 // Import Model + enums
 const { Group } = require("../database/models/Group.model");
 const { Article } = require("../database/models/Article.model");
+const { RequestState } = require("../database/enum");
 
 /**
  * Allows you to retrieve all groups of editors.
@@ -135,4 +136,24 @@ exports.insertArticle = async function (req, res) {
       res.status(400).json({ error: "Article Id must exists !" });
     }
   }
+};
+
+/**
+ *
+ */
+exports.delete = async function (req, res) {
+  const groupId = req.params.id;
+  const group = await Group.findById(groupId);
+
+  group.articles.forEach(async (articleId) => {
+    await Article.findByIdAndUpdate(articleId.toString(), {
+      published: RequestState.IN_WAIT,
+      id_group: null,
+      published_at: null,
+    });
+  });
+
+  const deletedGroup = await Group.findByIdAndDelete(groupId);
+
+  res.status(200).json(deletedGroup);
 };
