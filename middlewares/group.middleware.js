@@ -12,10 +12,7 @@ module.exports.validGroup = async (req, res, next) => {
 
     if (group) next();
     else res.status(400).json({ error: "Id must exists !" });
-  }
-
-  // Else
-  else {
+  } else {
     res.status(400).json({ error: "Id must exists !" });
   }
 };
@@ -25,14 +22,7 @@ module.exports.editorsGroup = async (req, res, next) => {
   const groupId = req.params.id;
   const group = await Group.findById(groupId);
 
-  // If the group exists
-  if (group) {
-    // We check that the group belongs to the user
-    if (group.id_editor.toString() === editor.id) next();
-    else res.status(400).json({ error: "You do not own the group !" });
-  }
-  // Else
-  else {
-    res.status(400).json({ error: "Id must exists !" });
-  }
+  // We check that the group belongs to the user
+  if (group.id_editor.toString() === editor.id) next();
+  else res.status(400).json({ error: "You do not own the group !" });
 };

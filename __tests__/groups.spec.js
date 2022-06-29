@@ -15,6 +15,7 @@ let groupTest;
 let articleTest;
 let userTest;
 let token;
+let token2;
 
 describe("Group API", () => {
   beforeAll(async () => {
@@ -43,8 +44,25 @@ describe("Group API", () => {
     userTest = data;
     token = data.token;
 
+    // Create Another User
+    await supertest(app).post("/api/v1/user/register").send({
+      lastname: "jean",
+      firstname: "jean",
+      email: "test2@test.fr",
+      password: "jesuisunmotdepasse",
+      role: Role.EDITOR,
+    });
+
+    const res2 = await supertest(app).post("/api/v1/user/login").send({
+      email: "test2@test.fr",
+      password: "jesuisunmotdepasse",
+    });
+
+    const data2 = JSON.parse(res2.text);
+    token2 = data2.token;
+
     // Create Article
-    const res2 = await supertest(app)
+    const res3 = await supertest(app)
       .post("/api/v1/article")
       .send({
         title: "eugfiuef",
@@ -53,7 +71,7 @@ describe("Group API", () => {
           "piojgohzbkdznd kjqzgdkgqkzgkdjzhqkdkjqzbk jdbkqbzkbdkjqbjkqbkjbzdkjbjk bjkqbjkzbkjdbkjqbkjdbkdjbzjkb jkzbkj bkjbkjbkj",
       })
       .set("authorization", `Bearer ${token}`);
-    articleTest = JSON.parse(res2.text);
+    articleTest = JSON.parse(res3.text);
   });
 
   afterAll(async () => {
@@ -163,6 +181,12 @@ describe("Group API", () => {
         .expect(400);
     });
 
+    test("Method GET \t-> Invalid ID", async () => {
+      const res = await supertest(app)
+        .get(`${groupRoute}/62bc078c1e9759579c64c035`)
+        .expect(400);
+    });
+
     test("Method PUT \t-> Valid ID and Valid DATA", async () => {
       const response = await supertest(app)
         .put(`${groupRoute}/${groupTest._id}`)
@@ -255,6 +279,27 @@ describe("Group API", () => {
           id_article: articleTest._id,
         })
         .expect(401)
+        .expect("Content-Type", /json/);
+    });
+
+    test("Method POST \t-> Valid DATA and Unvalid Group", async () => {
+      const groupRes = await supertest(app)
+        .post(groupRoute)
+        .send({
+          title: "je suis un test",
+        })
+        .set("authorization", `Bearer ${token2}`);
+
+      const data = JSON.parse(groupRes.text);
+      const groupId = data._id;
+
+      const res = await supertest(app)
+        .post(`${groupRoute}/${groupId}/article`)
+        .send({
+          id_article: articleTest._id,
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(400)
         .expect("Content-Type", /json/);
     });
 
