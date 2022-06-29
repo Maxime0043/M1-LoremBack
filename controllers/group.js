@@ -30,6 +30,16 @@ exports.getFromEditor = async function (req, res) {
 };
 
 /**
+ * Allows you to retrieve all the articles in a group.
+ */
+exports.getArticles = async function (req, res) {
+  const groupId = req.params.id;
+  const group = await Group.findById(groupId).populate("articles");
+
+  res.status(200).json(group.articles);
+};
+
+/**
  * Allows you to create a group without articles.
  */
 exports.create = async function (req, res) {
