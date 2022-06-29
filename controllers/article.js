@@ -60,7 +60,6 @@ exports.update = async function (req, res) {
     title: Joi.string().min(3),
     image: Joi.string().min(2),
     content: Joi.string().min(50),
-    published: Joi.string().valid(...Object.values(RequestState)),
   }).min(1);
 
   const { value: newArticle, error } = schema.validate(payload);
