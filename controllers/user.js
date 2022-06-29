@@ -15,6 +15,7 @@ if (!process.env.JWT_PRIVATE_KEY) {
 
 // Import Model
 const { User } = require("../database/models/User.model");
+const { Article } = require("../database/models/Article.model");
 
 /**
  * Allows you to retrieve the information of the connected user.
@@ -107,4 +108,13 @@ exports.login = async function (req, res) {
     firstname: account.firstname,
     role: account.role,
   });
+};
+
+/**
+ * Get all articles by user
+ */
+exports.getAllArticles = async function (req, res) {
+  const user = req.user;
+  const articles = await Article.find({ id_author: user.id });
+  res.status(200).json(articles);
 };
