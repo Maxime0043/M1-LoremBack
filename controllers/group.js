@@ -1,5 +1,6 @@
 const joi = require("joi");
-// Import Model
+
+// Import Model + enums
 const { Group } = require("../database/models/Group.model");
 const { Article } = require("../database/models/Article.model");
 
@@ -83,5 +84,45 @@ exports.update = async function (req, res) {
 
     // Returns updated object
     res.status(200).json(group);
+  }
+};
+
+/**
+ * Allows you to add an item to a group.
+ */
+exports.insertArticle = async function (req, res) {
+  const groupId = req.params.id;
+  const payload = req.body;
+
+  // Validation
+  const schema = joi.object({
+    id_article: joi.string().min(1).required(),
+  });
+  const { value, error } = schema.validate(payload);
+
+  // If the fields have been filled in incorrectly
+  if (error) {
+    res.status(400).json({ error: error.details[0].message });
+    return;
+  } else {
+    const articleId = value.id_article;
+    const article = await Article.findByIdAndUpdate(articleId, {
+      id_group: groupId,
+    });
+
+    // If the update has been performed
+    if (article) {
+      let group = await Group.findById(groupId);
+      group = await Group.findByIdAndUpdate(groupId, {
+        articles: [...group.articles, articleId],
+      });
+      group = await Group.findById(groupId);
+
+      res.status(200).json(group);
+    }
+    // Else
+    else {
+      res.status(400).json({ error: "Article Id must exists !" });
+    }
   }
 };

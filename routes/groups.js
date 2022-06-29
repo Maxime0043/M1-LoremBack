@@ -10,6 +10,11 @@ router.get("/:id", [validGroup], Group.get);
 router.get("/editor/:id", [validEditor], Group.getFromEditor);
 
 router.post("/", [authGuard], Group.create);
+router.post(
+  "/:id/article",
+  [authGuard, validGroup, editorsGroup],
+  Group.insertArticle
+);
 
 router.put("/:id", [authGuard, validGroup, editorsGroup], Group.update);
 
