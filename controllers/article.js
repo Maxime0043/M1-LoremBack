@@ -1,4 +1,5 @@
 const { Article } = require("../database/models/Article.model");
+const { Group } = require("../database/models/Group.model");
 const { RequestState } = require("../database/enum");
 const Joi = require("joi");
 
@@ -6,7 +7,7 @@ const Joi = require("joi");
  * Get all articles
  */
 exports.getAll = async function (req, res) {
-  const articles = await Article.find();
+  const articles = await Article.find().populate("id_group");
   res.status(200).json(articles);
 };
 
@@ -42,7 +43,7 @@ exports.create = async function (req, res) {
  */
 exports.get = async function (req, res) {
   const { id } = req.params;
-  const article = await Article.findById(id);
+  const article = await Article.findById(id).populate("id_group");
   if (!article) return res.status(400).json({ error: "Invalid Article Id !" });
 
   res.status(200).json(article);
