@@ -391,4 +391,63 @@ describe("Request API", () => {
       expect(data).toMatchObject(request);
     });
   });
+
+  describe("Route /api/v1/request/:id/refuse", () => {
+    beforeAll(async () => {
+      const response = await supertest(app)
+        .post("/api/v1/request")
+        .send({
+          id_article: idArticle,
+          id_group: idGroup,
+        })
+        .set("authorization", `Bearer ${tokenAuthor}`)
+        .expect(201)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(response.text);
+      let request = await Request.findById(data._id);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject(request);
+      idRequest = data._id;
+    });
+
+    test("Method POST\t -> Invalid User", async () => {
+      const res = await supertest(app)
+        .delete(`/api/v1/request/${idRequest}/refuse`)
+        .set("authorization", `Bearer ${tokenEditor2}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("User is not the owner of the group !");
+    });
+
+    test("Method POST\t -> Invalid User", async () => {
+      const res = await supertest(app)
+        .delete(`/api/v1/request/${idRequest}4/refuse`)
+        .set("authorization", `Bearer ${tokenEditor}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.error).toBe("Request ID invalid !");
+    });
+
+    test("Method POST\t -> Valid DATA", async () => {
+      request = await Request.findById(idRequest);
+      const res = await supertest(app)
+        .delete(`/api/v1/request/${idRequest}/refuse`)
+        .set("authorization", `Bearer ${tokenEditor}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+      request = JSON.parse(JSON.stringify(request));
+
+      expect(data).toMatchObject(request);
+    });
+  });
 });

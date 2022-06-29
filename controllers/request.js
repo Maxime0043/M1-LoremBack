@@ -111,3 +111,21 @@ exports.cancel = async function (req, res) {
         .json({ error: "User is not the owner of the article !" });
   } else return res.status(400).json({ error: "Request ID invalid !" });
 };
+
+exports.refuse = async function (req, res) {
+  const { id } = req.params;
+  const user = req.user;
+
+  if (ObjectID.isValid(id)) {
+    const request = await Request.findById(id);
+
+    let group = await Group.findById(request.id_group);
+
+    if (group.id_editor.toString() === user.id) {
+      return res.status(200).json(await request.delete());
+    } else
+      return res
+        .status(400)
+        .json({ error: "User is not the owner of the group !" });
+  } else return res.status(400).json({ error: "Request ID invalid !" });
+};
