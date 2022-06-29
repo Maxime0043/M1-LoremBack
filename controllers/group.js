@@ -1,4 +1,5 @@
 const joi = require("joi");
+const ObjectID = require("mongoose").Types.ObjectId;
 
 // Import Model + enums
 const { Group } = require("../database/models/Group.model");
@@ -117,29 +118,36 @@ exports.insertArticle = async function (req, res) {
     return;
   } else {
     const articleId = value.id_article;
-    const article = await Article.findByIdAndUpdate(articleId, {
-      id_group: groupId,
-    });
 
-    // If the update has been performed
-    if (article) {
-      let group = await Group.findById(groupId);
-      group = await Group.findByIdAndUpdate(groupId, {
-        articles: [...group.articles, articleId],
-      });
-      group = await Group.findById(groupId);
+    // Verification
+    if (ObjectID.isValid(articleId)) {
+      let article = await Article.findById(articleId);
 
-      res.status(200).json(group);
-    }
-    // Else
-    else {
+      if (article) {
+        await Article.findByIdAndUpdate(articleId, {
+          published: RequestState.PUBLISHED,
+          id_group: groupId,
+          published_at: Date.now(),
+        });
+
+        let group = await Group.findById(groupId);
+        group = await Group.findByIdAndUpdate(groupId, {
+          articles: [...group.articles, articleId],
+        });
+        group = await Group.findById(groupId);
+
+        res.status(200).json(group);
+      } else {
+        res.status(400).json({ error: "Article Id must exists !" });
+      }
+    } else {
       res.status(400).json({ error: "Article Id must exists !" });
     }
   }
 };
 
 /**
- *
+ * Allows you to delete a group.
  */
 exports.delete = async function (req, res) {
   const groupId = req.params.id;
@@ -156,4 +164,29 @@ exports.delete = async function (req, res) {
   const deletedGroup = await Group.findByIdAndDelete(groupId);
 
   res.status(200).json(deletedGroup);
+};
+
+/**
+ * Allows you to delete an article from a group.
+ */
+exports.deleteArticle = async function (req, res) {
+  const { groupId, articleId } = req.params;
+  const group = await Group.findById(groupId);
+  const articles = group.articles;
+
+  await Group.findByIdAndUpdate(groupId, {
+    articles: articles.filter(
+      (currentId) => currentId.toString() !== articleId
+    ),
+  });
+
+  let updatedArticle = await Article.findByIdAndUpdate(articleId, {
+    published: RequestState.IN_WAIT,
+    id_group: null,
+    published_at: null,
+  });
+
+  updatedArticle = await Article.findById(articleId);
+
+  res.status(200).json(updatedArticle);
 };

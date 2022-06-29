@@ -317,6 +317,17 @@ describe("Group API", () => {
         .expect("Content-Type", /json/);
     });
 
+    test("Method POST \t-> Invalid Article Id", async () => {
+      const res = await supertest(app)
+        .post(`${groupRoute}/${groupTest._id}/article`)
+        .send({
+          id_article: "djqzkd",
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
+
     test("Method POST \t-> Invalid DATA", async () => {
       const res = await supertest(app)
         .post(`${groupRoute}/${groupTest._id}/article`)
@@ -437,6 +448,79 @@ describe("Group API", () => {
     });
   });
 
+  describe(`Route ${groupRoute}/:groupId/article/:articleId`, () => {
+    test("Method DELETE \t-> Valid IDs and Invalid token", async () => {
+      const res = await supertest(app)
+        .delete(`${groupRoute}/${groupTest._id}/article/${articleTest.id}`)
+        .set("authorization", `Bearer qkuzgdkuqhdhqzid`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
+
+    test("Method DELETE \t-> Valid Group Id and Invalid Article Id", async () => {
+      const res = await supertest(app)
+        .delete(
+          `${groupRoute}/${groupTest._id}/article/62bc078c1e9759579c64c035`
+        )
+        .set("authorization", `Bearer ${token}`)
+        .expect(400);
+    });
+
+    test("Method DELETE \t-> Valid Article Id and Invalid Group Id", async () => {
+      const res = await supertest(app)
+        .delete(
+          `${groupRoute}/62bc078c1e9759579c64c035/article/${articleTest.id}`
+        )
+        .set("authorization", `Bearer ${token}`)
+        .expect(400);
+    });
+
+    test("Method DELETE \t-> Valid IDs and Valid token", async () => {
+      // Create an Article
+      const artRes = await supertest(app)
+        .post("/api/v1/article")
+        .send({
+          title: "eugfiuef",
+          image: "ehuehfoe",
+          content:
+            "piojgohzbkdznd kjqzgdkgqkzgkdjzhqkdkjqzbk jdbkqbzkbdkjqbjkqbkjbzdkjbjk bjkqbjkzbkjdbkjqbkjdbkdjbzjkb jkzbkj bkjbkjbkj",
+        })
+        .set("authorization", `Bearer ${authorToken}`);
+
+      let newArticle = JSON.parse(artRes.text);
+
+      // Link article to group
+      await supertest(app)
+        .post(`${groupRoute}/${groupTest._id}/article`)
+        .send({
+          id_article: newArticle._id,
+        })
+        .set("authorization", `Bearer ${token}`);
+
+      newArticle = await Article.findById(newArticle._id);
+
+      // Remove Article from Group
+      const res = await supertest(app)
+        .delete(
+          `${groupRoute}/${groupTest._id}/article/${newArticle._id.toString()}`
+        )
+        .set("authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const article = JSON.parse(res.text);
+      const group = await Group.findById(groupTest._id);
+
+      expect(group.articles).not.toEqual(
+        expect.arrayContaining([newArticle._id])
+      );
+
+      expect(article.published).toBe(RequestState.IN_WAIT);
+      expect(article.id_group).toBe(null);
+      expect(article.published_at).toBe(null);
+    });
+  });
+
   describe(`Route ${groupRoute}/:id - METHOD DELETE ONLY`, () => {
     test("Method DELETE \t-> Valid ID and Invalid token", async () => {
       const res = await supertest(app)
@@ -444,6 +528,13 @@ describe("Group API", () => {
         .set("authorization", `Bearer qkuzgdkuqhdhqzid`)
         .expect(400)
         .expect("Content-Type", /json/);
+    });
+
+    test("Method DELETE \t-> Invalid ID", async () => {
+      const res = await supertest(app)
+        .delete(`${groupRoute}/62bc078c1e9759579c64c035`)
+        .set("authorization", `Bearer ${token}`)
+        .expect(400);
     });
 
     test("Method DELETE \t-> Valid ID and Valid token", async () => {
@@ -473,13 +564,6 @@ describe("Group API", () => {
       expect(artData1Get.published).toBe(RequestState.IN_WAIT);
       expect(artData1Get.id_group).toBe(null);
       expect(artData1Get.published_at).toBe(null);
-    });
-
-    test("Method DELETE \t-> Invalid ID", async () => {
-      const res = await supertest(app)
-        .delete(`${groupRoute}/62bc078c1e9759579c64c035`)
-        .set("authorization", `Bearer ${token}`)
-        .expect(400);
     });
   });
 });
