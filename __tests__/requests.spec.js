@@ -262,7 +262,9 @@ describe("Request API", () => {
         .expect("Content-Type", /json/);
 
       const data = JSON.parse(res.text);
-      let request = await Request.findById(idRequest);
+      let request = await Request.findById(idRequest)
+        .populate("id_article")
+        .populate("id_group");
       request = JSON.parse(JSON.stringify(request));
 
       expect(data).toMatchObject([request]);
@@ -276,7 +278,9 @@ describe("Request API", () => {
         .expect("Content-Type", /json/);
 
       const data = JSON.parse(res.text);
-      let request = await Request.findById(idRequest);
+      let request = await Request.findById(idRequest)
+        .populate("id_article")
+        .populate("id_group");
       request = JSON.parse(JSON.stringify(request));
 
       expect(data).toMatchObject([request]);
