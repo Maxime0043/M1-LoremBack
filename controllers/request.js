@@ -34,8 +34,8 @@ exports.create = async function (req, res) {
     return res.status(400).json({ error: "Group ID not valid !" });
   }
 
-  Request.create(request, function (_, request) {
-    article.updateOne({
+  Request.create(request, async function (_, request) {
+    await article.updateOne({
       published: RequestState.IN_WAIT,
     });
     res.status(201).json(request);
