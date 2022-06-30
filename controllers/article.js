@@ -1,5 +1,6 @@
 const { Article } = require("../database/models/Article.model");
 const { Group } = require("../database/models/Group.model");
+const { User } = require("../database/models/User.model");
 const { RequestState } = require("../database/enum");
 const Joi = require("joi");
 
@@ -7,7 +8,9 @@ const Joi = require("joi");
  * Get all articles
  */
 exports.getAll = async function (req, res) {
-  const articles = await Article.find().populate("id_group");
+  const articles = await Article.find()
+    .populate("id_group")
+    .populate("id_author");
   res.status(200).json(articles);
 };
 
@@ -43,7 +46,9 @@ exports.create = async function (req, res) {
  */
 exports.get = async function (req, res) {
   const { id } = req.params;
-  const article = await Article.findById(id).populate("id_group");
+  const article = await Article.findById(id)
+    .populate("id_group")
+    .populate("id_author");
   if (!article) return res.status(400).json({ error: "Invalid Article Id !" });
 
   res.status(200).json(article);
@@ -60,7 +65,6 @@ exports.update = async function (req, res) {
     title: Joi.string().min(3),
     image: Joi.string().min(2),
     content: Joi.string().min(50),
-    published: Joi.string().valid(...Object.values(RequestState)),
   }).min(1);
 
   const { value: newArticle, error } = schema.validate(payload);

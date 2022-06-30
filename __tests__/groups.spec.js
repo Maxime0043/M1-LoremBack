@@ -262,99 +262,14 @@ describe("Group API", () => {
         .expect(400);
     });
 
-    test("Method POST \t-> Valid DATA and Unvalid token", async () => {
+    test("Method POST \t-> Undefined method", async () => {
       const res = await supertest(app)
         .post(`${groupRoute}/${groupTest._id}/article`)
         .send({
-          id_article: articleTest._id,
+          id_article: "kjzbfkz",
         })
-        .set("authorization", "123")
-        .expect(401)
-        .expect("Content-Type", /json/);
-    });
-
-    test("Method POST \t-> Valid DATA without token", async () => {
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupTest._id}/article`)
-        .send({
-          id_article: articleTest._id,
-        })
-        .expect(401)
-        .expect("Content-Type", /json/);
-    });
-
-    test("Method POST \t-> Valid DATA and Unvalid Group", async () => {
-      const groupRes = await supertest(app)
-        .post(groupRoute)
-        .send({
-          title: "je suis un test",
-        })
-        .set("authorization", `Bearer ${token2}`);
-
-      const data = JSON.parse(groupRes.text);
-      const groupId = data._id;
-
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupId}/article`)
-        .send({
-          id_article: articleTest._id,
-        })
-        .set("authorization", `Bearer ${token}`)
-        .expect(400)
-        .expect("Content-Type", /json/);
-    });
-
-    test("Method POST \t-> Invalid Article Id", async () => {
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupTest._id}/article`)
-        .send({
-          id_article: "62bc19c21e9759579c64c038",
-        })
-        .set("authorization", `Bearer ${token}`)
-        .expect(400)
-        .expect("Content-Type", /json/);
-    });
-
-    test("Method POST \t-> Invalid Article Id", async () => {
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupTest._id}/article`)
-        .send({
-          id_article: "djqzkd",
-        })
-        .set("authorization", `Bearer ${token}`)
-        .expect(400)
-        .expect("Content-Type", /json/);
-    });
-
-    test("Method POST \t-> Invalid DATA", async () => {
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupTest._id}/article`)
-        .send({
-          id_articl: "qdhgdgzqkudgqizhdi",
-        })
-        .set("authorization", `Bearer ${token}`)
-        .expect(400)
-        .expect("Content-Type", /json/);
-    });
-
-    test("Method POST \t-> Valid DATA and Valid token", async () => {
-      const res = await supertest(app)
-        .post(`${groupRoute}/${groupTest._id}/article`)
-        .send({
-          id_article: articleTest._id,
-        })
-        .set("authorization", `Bearer ${token}`)
-        .expect(200)
-        .expect("Content-Type", /json/);
-
-      const data = JSON.parse(res.text);
-      let group = await Group.findById(data._id);
-      group = JSON.parse(JSON.stringify(group));
-
-      expect(data).toMatchObject(group);
-
-      // Update articleTest
-      articleTest = await Article.findById(articleTest._id);
+        .expect(404)
+        .expect("Content-Type", /html/);
     });
 
     test("Method PUT \t-> Undefined method", async () => {
@@ -536,8 +451,20 @@ describe("Group API", () => {
     });
 
     test("Method DELETE \t-> Valid ID and Valid token", async () => {
+      // Inserting the article in the group
+      await Article.findByIdAndUpdate(articleTest._id, {
+        published: RequestState.IN_WAIT,
+        id_group: groupTest._id.toString(),
+        published_at: Date.now(),
+      });
+      articleTest = await Article.findById(articleTest._id);
+
+      await Group.findByIdAndUpdate(groupTest._id.toString(), {
+        articles: [...groupTest.articles, articleTest._id.toString()],
+      });
+
       // We delete our group
-      const res = await supertest(app)
+      await supertest(app)
         .delete(`${groupRoute}/${groupTest._id}`)
         .set("authorization", `Bearer ${token}`)
         .expect(200)
@@ -553,7 +480,7 @@ describe("Group API", () => {
 
       // We check that the article have been updated
       const artRes = await supertest(app)
-        .get(`${articleRoute}/${articleTest.id}`)
+        .get(`${articleRoute}/${articleTest._id.toString()}`)
         .expect(200)
         .expect("Content-Type", /json/);
 
