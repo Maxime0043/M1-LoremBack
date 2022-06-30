@@ -204,4 +204,30 @@ describe("User API", () => {
         .expect("Content-Type", /json/);
     });
   });
+
+  describe(`Route ${userRoute}/articles`, () => {
+    test("Method GET \t", async () => {
+      await supertest(app)
+        .post("/api/v1/article")
+        .send({
+          title: "Titre",
+          image: "https://picsum.photos/200/300",
+          content:
+            "CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT CONTENT",
+        })
+        .set("authorization", `Bearer ${token}`)
+        .expect(201)
+        .expect("Content-Type", /json/);
+
+      const res = await supertest(app)
+        .get(userRoute + "/articles")
+        .set("authorization", `Bearer ${token}`)
+        .expect(200)
+        .expect("Content-Type", /json/);
+
+      const data = JSON.parse(res.text);
+
+      expect(data.length).toBe(1);
+    });
+  });
 });

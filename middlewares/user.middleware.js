@@ -4,7 +4,7 @@ const { Role } = require("../database/enum");
 const ObjectID = require("mongoose").Types.ObjectId;
 
 module.exports.validEditor = async (req, res, next) => {
-  const id = req.params?.id || req.user.id;
+  const id = req.user.id || req.params?.id;
 
   // Verification
   if (ObjectID.isValid(id)) {
