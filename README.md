@@ -1,15 +1,5 @@
 # Table of contents
 
-- [Specifications](#specifications)
-  - [Features](#features)
-  - [Software architecture of the application](#architecture)
-    - [Front-end slicing](#front-end)
-    - [Back-end slicing](#back-end)
-    - [Organization of the database](#database)
-    - [Deploying the application](#deploy)
-      - [Deployment of the front-end](#deploy-front)
-      - [Deployment of the back-end](#deploy-back)
-  - [Tasks assignment](#tasks-assignment)
 - [Documentation](#documentation)
   - [API](#api)
     - [Users](#users)
@@ -31,33 +21,13 @@
       - [Add - [POST]](#request-post)
       - [Delete - [DELETE]](#request-delete)
 
-# <a id="specifications"></a>I. Specifications
+# <a id="documentation"></a>I. Documentation
 
-## <a id="features"></a>1.1. Features
-
-## <a id="architecture"></a>1.2. Software architecture of the application
-
-### <a id="front-end"></a>1.2.1. Front-end slicing
-
-### <a id="back-end"></a>1.2.2. Back-end slicing
-
-### <a id="database"></a>1.2.3. Organization of the database
-
-### <a id="deploy"></a>1.2.4. Deploying the application
-
-#### <a id="deploy-front"></a>a. Deployment of the front-end
-
-#### <a id="deploy-back"></a>b. Deployment of the back-end
-
-## <a id="tasks-assignment"></a>1.3. Tasks assignment
-
-# <a id="documentation"></a>II. Documentation
-
-## <a id="api"></a>2.1. API
+## <a id="api"></a>1.1. API
 
 Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-h3-2022.herokuapp.com/api/v1)
 
-### <a id="users"></a>2.1.1. Users
+### <a id="users"></a>1.1.1. Users
 
 #### <a id="user-register"></a>a. Register - [POST]
 
