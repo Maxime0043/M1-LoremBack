@@ -19,8 +19,9 @@ exports.create = async function (req, res) {
   const { value: request, error } = schema.validate(payload);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
+  let article = null;
   if (ObjectID.isValid(request.id_article)) {
-    const article = await Article.findById(request.id_article);
+    article = await Article.findById(request.id_article);
     if (!article) return res.status(400).json({ error: "Article not found" });
   } else {
     return res.status(400).json({ error: "Article ID not valid !" });
@@ -34,6 +35,9 @@ exports.create = async function (req, res) {
   }
 
   Request.create(request, function (_, request) {
+    article.updateOne({
+      published: RequestState.IN_WAIT,
+    });
     res.status(201).json(request);
   });
 };
@@ -49,14 +53,20 @@ exports.getAll = async function (req, res) {
     const tabGroups = groups.map((val) => val._id);
     const requests = await Request.find({
       id_group: { $in: tabGroups },
-    }).exec();
+    })
+      .populate("id_article")
+      .populate("id_group")
+      .exec();
     return res.status(200).json(requests);
   } else if (user.role === Role.AUTHOR) {
     const articles = await Article.find({ id_author: user.id }, "id").exec();
     const tabArticles = articles.map((val) => val._id);
     const requests = await Request.find({
       id_article: { $in: tabArticles },
-    }).exec();
+    })
+      .populate("id_article")
+      .populate("id_group")
+      .exec();
     return res.status(200).json(requests);
   } else {
     return res.status(400).json({ error: "User role not valid !" });
