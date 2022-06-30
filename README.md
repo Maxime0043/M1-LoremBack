@@ -20,6 +20,10 @@
       - [Add - [POST]](#group-add)
       - [Update - [PUT]](#group-update)
       - [Delete - [DELETE]](#group-delete)
+    - [Requests](#requests)
+      - [Get - [GET]](#request-get)
+      - [Add - [POST]](#request-post)
+      - [Delete - [DELETE]](#request-delete)
 
 # <a id="specifications"></a>Specifications
 
@@ -47,7 +51,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     lastname: String, // From 2 to 50 characters
 >     firstname: String, // From 2 to 50 characters
@@ -67,7 +71,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     email: String, // 255 characters maximum in email format
 >     password: String, // From 6 to 255 characters
@@ -124,7 +128,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     title: String, // 3 characters minimum
 >     image: String, // 2 characters minimum
@@ -150,7 +154,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     title: String, // 3 characters minimum
 >     image: String, // 2 characters minimum
@@ -230,7 +234,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     title: String, // 3 characters minimum
 > }
@@ -252,7 +256,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     id_article: String, // Corresponds to the ObjectID of an item
 > }
@@ -276,7 +280,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```json
+> ```javascript
 > {
 >     title: String, // 3 characters minimum
 > }
@@ -310,6 +314,93 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > ```txt
 > projet-technique-h3-2022.herokuapp.com/api/v1/group/:groupId/article/:articleId
+> ```
+>
+> Headers to be sent :
+>
+> ```json
+> {
+>   "authorization": "Bearer <token>"
+> }
+> ```
+
+### <a id="requests"></a>Requests
+
+#### <a id="request-get"></a>Get - [GET]
+
+> Allows you to retrieve all requests according to the user's role :
+>
+> ```txt
+> projet-technique-h3-2022.herokuapp.com/api/v1/request
+> ```
+>
+> Headers to be sent :
+>
+> ```json
+> {
+>   "authorization": "Bearer <token>"
+> }
+> ```
+
+#### <a id="request-post"></a>Add - [POST]
+
+> Allows an autor to create a request for his article :
+>
+> ```txt
+> projet-technique-h3-2022.herokuapp.com/api/v1/request/
+> ```
+>
+> Data to be sent :
+>
+> ```txt
+> {
+>     id_article: String, // Corresponds to the ObjectID of an item
+>     id_group: String, // Corresponds to the ObjectID of an item
+> }
+> ```
+>
+> Headers to be sent :
+>
+> ```json
+> {
+>   "authorization": "Bearer <token>"
+> }
+> ```
+
+#### <a id="request-delete"></a>Delete - [DELETE]
+
+> Allows an editor to validate a request :
+>
+> ```txt
+> projet-technique-h3-2022.herokuapp.com/api/v1/request/:id/valid
+> ```
+>
+> Headers to be sent :
+>
+> ```json
+> {
+>   "authorization": "Bearer <token>"
+> }
+> ```
+
+> Allows an editor to refused a request :
+>
+> ```txt
+> projet-technique-h3-2022.herokuapp.com/api/v1/request/:id/refuse
+> ```
+>
+> Headers to be sent :
+>
+> ```json
+> {
+>   "authorization": "Bearer <token>"
+> }
+> ```
+
+> Allows an autor to cancel a request :
+>
+> ```txt
+> projet-technique-h3-2022.herokuapp.com/api/v1/request/:id/cancel
 > ```
 >
 > Headers to be sent :
