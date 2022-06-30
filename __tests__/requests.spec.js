@@ -296,9 +296,9 @@ describe("Request API", () => {
   });
 
   describe("Route /api/v1/request/:id/valid", () => {
-    test("Method POST\t -> Invalid User", async () => {
+    test("Method DELETE\t -> Invalid User owner", async () => {
       const res = await supertest(app)
-        .post(`/api/v1/request/${idRequest}/valid`)
+        .delete(`/api/v1/request/${idRequest}/valid`)
         .set("authorization", `Bearer ${tokenEditor2}`)
         .expect(400)
         .expect("Content-Type", /json/);
@@ -308,9 +308,9 @@ describe("Request API", () => {
       expect(data.error).toBe("User is not the owner of the group !");
     });
 
-    test("Method POST\t -> Invalid User", async () => {
+    test("Method DELETE\t -> Invalid Request ID", async () => {
       const res = await supertest(app)
-        .post(`/api/v1/request/${idRequest}4/valid`)
+        .delete(`/api/v1/request/${idRequest}4/valid`)
         .set("authorization", `Bearer ${tokenEditor}`)
         .expect(400)
         .expect("Content-Type", /json/);
@@ -320,10 +320,10 @@ describe("Request API", () => {
       expect(data.error).toBe("Request ID invalid !");
     });
 
-    test("Method POST\t -> Valid DATA", async () => {
+    test("Method DELETE\t -> Valid DATA", async () => {
       let request = await Request.findById(idRequest);
       const res = await supertest(app)
-        .post(`/api/v1/request/${idRequest}/valid`)
+        .delete(`/api/v1/request/${idRequest}/valid`)
         .set("authorization", `Bearer ${tokenEditor}`)
         .expect(200)
         .expect("Content-Type", /json/);
@@ -355,7 +355,7 @@ describe("Request API", () => {
       idRequest = data._id;
     });
 
-    test("Method POST\t -> Invalid User", async () => {
+    test("Method DELETE\t -> Invalid User owner", async () => {
       const res = await supertest(app)
         .delete(`/api/v1/request/${idRequest}/cancel`)
         .set("authorization", `Bearer ${tokenAuthor2}`)
@@ -367,7 +367,7 @@ describe("Request API", () => {
       expect(data.error).toBe("User is not the owner of the article !");
     });
 
-    test("Method POST\t -> Invalid User", async () => {
+    test("Method DELETE\t -> Invalid Id Request", async () => {
       const res = await supertest(app)
         .delete(`/api/v1/request/${idRequest}4/cancel`)
         .set("authorization", `Bearer ${tokenAuthor}`)
@@ -379,7 +379,7 @@ describe("Request API", () => {
       expect(data.error).toBe("Request ID invalid !");
     });
 
-    test("Method POST\t -> Valid DATA", async () => {
+    test("Method DELETE\t -> Valid DATA", async () => {
       request = await Request.findById(idRequest);
       const res = await supertest(app)
         .delete(`/api/v1/request/${idRequest}/cancel`)
@@ -414,7 +414,7 @@ describe("Request API", () => {
       idRequest = data._id;
     });
 
-    test("Method POST\t -> Invalid User", async () => {
+    test("Method DELETE\t -> Invalid User owner", async () => {
       const res = await supertest(app)
         .delete(`/api/v1/request/${idRequest}/refuse`)
         .set("authorization", `Bearer ${tokenEditor2}`)
@@ -426,7 +426,7 @@ describe("Request API", () => {
       expect(data.error).toBe("User is not the owner of the group !");
     });
 
-    test("Method POST\t -> Invalid User", async () => {
+    test("Method DELETE\t -> Invalid Request ID", async () => {
       const res = await supertest(app)
         .delete(`/api/v1/request/${idRequest}4/refuse`)
         .set("authorization", `Bearer ${tokenEditor}`)
@@ -438,7 +438,7 @@ describe("Request API", () => {
       expect(data.error).toBe("Request ID invalid !");
     });
 
-    test("Method POST\t -> Valid DATA", async () => {
+    test("Method DELETE\t -> Valid DATA", async () => {
       request = await Request.findById(idRequest);
       const res = await supertest(app)
         .delete(`/api/v1/request/${idRequest}/refuse`)

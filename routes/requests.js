@@ -11,7 +11,7 @@ router.post("/", [authGuardAuthor], Request.create);
 
 router.get("/", [authGuard], Request.getAll);
 
-router.post("/:id/valid", [authGuard, validEditor], Request.valid);
+router.delete("/:id/valid", [authGuard, validEditor], Request.valid);
 router.delete("/:id/cancel", [authGuardAuthor], Request.cancel);
 router.delete("/:id/refuse", [authGuard, validEditor], Request.refuse);
 
