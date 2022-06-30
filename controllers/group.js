@@ -100,53 +100,6 @@ exports.update = async function (req, res) {
 };
 
 /**
- * Allows you to add an article to a group.
- */
-exports.insertArticle = async function (req, res) {
-  const groupId = req.params.id;
-  const payload = req.body;
-
-  // Validation
-  const schema = joi.object({
-    id_article: joi.string().min(1).required(),
-  });
-  const { value, error } = schema.validate(payload);
-
-  // If the fields have been filled in incorrectly
-  if (error) {
-    res.status(400).json({ error: error.details[0].message });
-    return;
-  } else {
-    const articleId = value.id_article;
-
-    // Verification
-    if (ObjectID.isValid(articleId)) {
-      let article = await Article.findById(articleId);
-
-      if (article) {
-        await Article.findByIdAndUpdate(articleId, {
-          published: RequestState.PUBLISHED,
-          id_group: groupId,
-          published_at: Date.now(),
-        });
-
-        let group = await Group.findById(groupId);
-        group = await Group.findByIdAndUpdate(groupId, {
-          articles: [...group.articles, articleId],
-        });
-        group = await Group.findById(groupId);
-
-        res.status(200).json(group);
-      } else {
-        res.status(400).json({ error: "Article Id must exists !" });
-      }
-    } else {
-      res.status(400).json({ error: "Article Id must exists !" });
-    }
-  }
-};
-
-/**
  * Allows you to delete a group.
  */
 exports.delete = async function (req, res) {
