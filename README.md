@@ -352,7 +352,7 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Data to be sent :
 >
-> ```txt
+> ```javascript
 > {
 >     id_article: String, // Corresponds to the ObjectID of an item
 >     id_group: String, // Corresponds to the ObjectID of an item
