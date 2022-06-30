@@ -53,14 +53,20 @@ exports.getAll = async function (req, res) {
     const tabGroups = groups.map((val) => val._id);
     const requests = await Request.find({
       id_group: { $in: tabGroups },
-    }).exec();
+    })
+      .populate("id_article")
+      .populate("id_group")
+      .exec();
     return res.status(200).json(requests);
   } else if (user.role === Role.AUTHOR) {
     const articles = await Article.find({ id_author: user.id }, "id").exec();
     const tabArticles = articles.map((val) => val._id);
     const requests = await Request.find({
       id_article: { $in: tabArticles },
-    }).exec();
+    })
+      .populate("id_article")
+      .populate("id_group")
+      .exec();
     return res.status(200).json(requests);
   } else {
     return res.status(400).json({ error: "User role not valid !" });
