@@ -36,7 +36,10 @@ exports.register = async function (req, res) {
     firstname: joi.string().min(2).max(50).required(),
     email: joi.string().max(255).required().email(),
     password: joi.string().min(6).max(255).required(),
-    role: joi.string().valid(...Object.values(Role)),
+    role: joi
+      .string()
+      .valid(...Object.values(Role))
+      .required(),
   });
 
   const { value: account, error } = schema.validate(payload);
