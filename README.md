@@ -2,7 +2,13 @@
 
 - [Specifications](#specifications)
   - [Features](#features)
-  - [Database](#database)
+  - [Software architecture of the application](#architecture)
+    - [Front-end slicing](#front-end)
+    - [Back-end slicing](#back-end)
+    - [Organization of the database](#database)
+    - [Deploying the application](#deploy)
+      - [Deployment of the front-end](#deploy-front)
+      - [Deployment of the back-end](#deploy-back)
   - [Tasks assignment](#tasks-assignment)
 - [Documentation](#documentation)
   - [API](#api)
@@ -25,29 +31,39 @@
       - [Add - [POST]](#request-post)
       - [Delete - [DELETE]](#request-delete)
 
-# <a id="specifications"></a>Specifications
+# <a id="specifications"></a>I. Specifications
 
-## <a id="features"></a>Features
+## <a id="features"></a>1.1. Features
 
-## <a id="database"></a>Database
+## <a id="architecture"></a>1.2. Software architecture of the application
 
-## <a id="tasks-assignment"></a>Tasks assignment
+### <a id="front-end"></a>1.2.1. Front-end slicing
 
-# <a id="documentation"></a>Documentation
+### <a id="back-end"></a>1.2.2. Back-end slicing
 
-## <a id="api"></a>API
+### <a id="database"></a>1.2.3. Organization of the database
 
-Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022.herokuapp.com)
+### <a id="deploy"></a>1.2.4. Deploying the application
 
-### <a id="users"></a>Users
+#### <a id="deploy-front"></a>a. Deployment of the front-end
 
-#### <a id="user-register"></a>Register - [POST]
+#### <a id="deploy-back"></a>b. Deployment of the back-end
 
-> Allows a user to register :
+## <a id="tasks-assignment"></a>1.3. Tasks assignment
+
+# <a id="documentation"></a>II. Documentation
+
+## <a id="api"></a>2.1. API
+
+Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-h3-2022.herokuapp.com/api/v1)
+
+### <a id="users"></a>2.1.1. Users
+
+#### <a id="user-register"></a>a. Register - [POST]
+
+> Allows a user to register.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/user/register
-> ```
+> Path : `/user/register`
 >
 > Data to be sent :
 >
@@ -61,13 +77,11 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 > }
 > ```
 
-#### <a id="user-login"></a>Login - [POST]
+#### <a id="user-login"></a>b. Login - [POST]
 
-> Allows a user to login :
+> Allows a user to login.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/user/login
-> ```
+> Path : `/user/login`
 >
 > Data to be sent :
 >
@@ -78,53 +92,43 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 > }
 > ```
 
-#### <a id="user-account"></a>My Account - [GET]
+#### <a id="user-account"></a>c. My Account - [GET]
 
-> Allows you to retrieve the information of the connected user :
+> Allows you to retrieve the information of the connected user.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/user/account
-> ```
+> Path : `/user/account`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>";
 > }
 > ```
 
 ---
 
-### <a id="articles"></a>Articles
+### <a id="articles"></a>1.2.2. Articles
 
-#### <a id="article-get"></a>List - [GET]
+#### <a id="article-get"></a>a. List - [GET]
 
-> Allows you to retrieve all articles :
+> Allows you to retrieve all articles.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/article
-> ```
+> Path : `/article`
 
-> Allows you to retrieve one article :
+> Allows you to retrieve one article.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/article/:id
-> ```
+> Path : `/article/:id`
 
-> Allows you to retrieve all the articles of a user :
+> Allows you to retrieve all the articles of a user.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/user/articles
-> ```
+> Path : `/user/articles`
 
-#### <a id="article-add"></a>Add - [POST]
+#### <a id="article-add"></a>b. Add - [POST]
 
-> Allows an author to create an article :
+> Allows an author to create an article.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/article
-> ```
+> Path : `/article`
 >
 > Data to be sent :
 >
@@ -138,19 +142,17 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>";
 > }
 > ```
 
-#### <a id="article-update"></a>Update - [PUT]
+#### <a id="article-update"></a>c. Update - [PUT]
 
-> Allows an author to modify one of his articles :
+> Allows an author to modify one of his articles.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/article/:id
-> ```
+> Path : `/article/:id`
 >
 > Data to be sent :
 >
@@ -164,73 +166,61 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->     authorization: <token>
+>   authorization: "Bearer <token>";
 > }
 > ```
 
-#### <a id="article-delete"></a>Delete - [DELETE]
+#### <a id="article-delete"></a>d. Delete - [DELETE]
 
-> Allows an author to delete one of his articles :
+> Allows an author to delete one of his articles.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/article/:id
-> ```
+> Path : `/article/:id`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->     authorization: <token>
+>   authorization: "Bearer <token>";
 > }
 > ```
 
 ---
 
-### <a id="groups"></a>Groups
+### <a id="groups"></a>1.2.3. Groups
 
-#### <a id="group-get"></a>List - [GET]
+#### <a id="group-get"></a>a. List - [GET]
 
-> Allows you to retrieve all groups of editors :
+> Allows you to retrieve all groups of editors.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group
-> ```
+> Path : `/group`
 
-> Allows you to retrieve one group :
+> Allows you to retrieve one group.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/:id
-> ```
+> Path : `/group/:id`
 
-> Retrieves all groups from the connected editor :
+> Retrieves all groups from the connected editor.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/editor
-> ```
+> Path : `/group/editor`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->     authorization: <token>
+>   authorization: "Bearer <token>";
 > }
 > ```
 >
-> Allows you to retrieve all the articles in a group :
+> Allows you to retrieve all the articles in a group.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/:id/article
-> ```
+> Path : `/group/:id/article`
 
-#### <a id="group-add"></a>Add - [POST]
+#### <a id="group-add"></a>b. Add - [POST]
 
-> Allows an editor to create a group :
+> Allows an editor to create a group.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group
-> ```
+> Path : `/group`
 >
 > Data to be sent :
 >
@@ -242,41 +232,17 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Headers to be sent :
 >
-> ```json
-> {
->   "authorization": "Bearer <token>"
-> }
-> ```
-
-> Allows an editor to add an article to a group :
->
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/:id/article
-> ```
->
-> Data to be sent :
->
 > ```javascript
 > {
->     id_article: String, // Corresponds to the ObjectID of an item
-> }
-> ```
->
-> Headers to be sent :
->
-> ```json
-> {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>";
 > }
 > ```
 
-#### <a id="group-update"></a>Update - [PUT]
+#### <a id="group-update"></a>c. Update - [PUT]
 
-> Allows an editor to modify one of his groups :
+> Allows an editor to modify one of his groups.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/:id
-> ```
+> Path : `/group/:id`
 >
 > Data to be sent :
 >
@@ -288,67 +254,61 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>";
 > }
 > ```
 
-#### <a id="group-delete"></a>Delete - [DELETE]
+#### <a id="group-delete"></a>d. Delete - [DELETE]
 
-> Allows an editor to delete one of his groups and remove all articles linked to it :
+> Allows an editor to delete one of his groups and remove all articles linked to it.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/:id
-> ```
+> Path : `/group/:id`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>";
 > }
 > ```
 
-> Allows an editor to delete an article from one of his groups :
+> Allows an editor to delete an article from one of his groups.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/group/:groupId/article/:articleId
-> ```
+> Path : `/group/:groupId/article/:articleId`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>";
 > }
 > ```
 
-### <a id="requests"></a>Requests
+---
 
-#### <a id="request-get"></a>Get - [GET]
+### <a id="requests"></a>1.2.4. Requests
 
-> Allows you to retrieve all requests according to the user's role :
+#### <a id="request-get"></a>a. Get - [GET]
+
+> Allows you to retrieve all requests according to the user's role.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/request
-> ```
+> Path : `/request`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>"
 > }
 > ```
 
-#### <a id="request-post"></a>Add - [POST]
+#### <a id="request-post"></a>b. Add - [POST]
 
-> Allows an autor to create a request for his article :
+> Allows an autor to create a request for his article.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/request/
-> ```
+> Path : `/request`
 >
 > Data to be sent :
 >
@@ -361,52 +321,46 @@ Link : [projet-technique-h3-2022.herokuapp.com](https://projet-technique-h3-2022
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>"
 > }
 > ```
 
-#### <a id="request-delete"></a>Delete - [DELETE]
+#### <a id="request-delete"></a>c. Delete - [DELETE]
 
-> Allows an editor to validate a request :
+> Allows an editor to validate a request.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/request/:id/valid
-> ```
+> `/request/:id/valid`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>"
 > }
 > ```
 
-> Allows an editor to refused a request :
+> Allows an editor to refused a request.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/request/:id/refuse
-> ```
+> `/request/:id/refuse`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>"
 > }
 > ```
 
-> Allows an autor to cancel a request :
+> Allows an autor to cancel a request.
 >
-> ```txt
-> projet-technique-h3-2022.herokuapp.com/api/v1/request/:id/cancel
-> ```
+> `/request/:id/cancel`
 >
 > Headers to be sent :
 >
-> ```json
+> ```javascript
 > {
->   "authorization": "Bearer <token>"
+>   authorization: "Bearer <token>"
 > }
 > ```
