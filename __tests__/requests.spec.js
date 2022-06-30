@@ -7,7 +7,7 @@ const { User } = require("../database/models/User.model");
 const { Request } = require("../database/models/Request.model");
 const { Group } = require("../database/models/Group.model");
 const { Article } = require("../database/models/Article.model");
-const { Role } = require("../database/enum");
+const { Role, RequestState } = require("../database/enum");
 
 let tokenAuthor = "";
 let tokenAuthor2 = "";
@@ -173,6 +173,11 @@ describe("Request API", () => {
       const data = JSON.parse(response.text);
       let request = await Request.findById(data._id);
       request = JSON.parse(JSON.stringify(request));
+
+      let article = await Article.findById(idArticle);
+      article = JSON.parse(JSON.stringify(article));
+
+      expect(article.published).toBe(RequestState.IN_WAIT);
 
       expect(data).toMatchObject(request);
       idRequest = data._id;
