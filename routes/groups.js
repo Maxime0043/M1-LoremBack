@@ -12,11 +12,6 @@ router.get("/:id", [validGroup], Group.get);
 router.get("/:id/article", [validGroup], Group.getArticles);
 
 router.post("/", [authGuard], Group.create);
-router.post(
-  "/:id/article",
-  [authGuard, validGroup, editorsGroup],
-  Group.insertArticle
-);
 
 router.put("/:id", [authGuard, validGroup, editorsGroup], Group.update);
 
