@@ -219,6 +219,17 @@ describe("Group API", () => {
       expect(data.title).toBe("titre modifié");
     });
 
+    test("Method PUT \t-> Wrong editor token", () => {
+      return supertest(app)
+        .put(`${groupRoute}/${groupTest._id}`)
+        .send({
+          title: "test modifié",
+        })
+        .set("authorization", `Bearer ${token2}`)
+        .expect(400)
+        .expect("Content-Type", /json/);
+    });
+
     test("Method PUT \t-> Invalid ID", () => {
       return supertest(app)
         .put(`${groupRoute}/zkjdfkjehfl`)
