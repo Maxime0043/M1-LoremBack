@@ -144,7 +144,7 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >
 > ```json
 > {
->   authorization: "Bearer <token>"
+>   "authorization": "Bearer <token>"
 > }
 > ```
 
