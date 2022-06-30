@@ -19,8 +19,9 @@ exports.create = async function (req, res) {
   const { value: request, error } = schema.validate(payload);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
+  let article = null;
   if (ObjectID.isValid(request.id_article)) {
-    const article = await Article.findById(request.id_article);
+    article = await Article.findById(request.id_article);
     if (!article) return res.status(400).json({ error: "Article not found" });
   } else {
     return res.status(400).json({ error: "Article ID not valid !" });
@@ -34,6 +35,9 @@ exports.create = async function (req, res) {
   }
 
   Request.create(request, function (_, request) {
+    article.updateOne({
+      published: RequestState.IN_WAIT,
+    });
     res.status(201).json(request);
   });
 };
