@@ -85,14 +85,71 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > Allows you to retrieve all articles.
 >
 > Path : `/article`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>   {
+>    _id: String,
+>    title: String,
+>    image: String,
+>    content: String,
+>    updated_at: Date,
+>    published_at: Date,
+>    published: String,
+>    id_group: Group,
+>    id_author: User,
+>    created_at: String,
+>   },
+>   ...
+> ]
+> ```
 
 > Allows you to retrieve one article.
 >
 > Path : `/article/:id`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
+> }
+> ```
 
 > Allows you to retrieve all the articles of a user.
 >
 > Path : `/user/articles`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>   {
+>    _id: String,
+>    title: String,
+>    image: String,
+>    content: String,
+>    updated_at: Date,
+>    published_at: Date,
+>    published: String,
+>    id_group: Group,
+>    id_author: String,
+>    created_at: String,
+>   },
+>   ...
+> ]
+> ```
 
 #### <a id="article-add"></a>b. Add - [POST]
 
@@ -115,6 +172,23 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/201/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
 > }
 > ```
 
@@ -141,6 +215,23 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
+> }
+> ```
 
 #### <a id="article-delete"></a>d. Delete - [DELETE]
 
@@ -153,6 +244,23 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
 > }
 > ```
 
@@ -248,7 +356,7 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >
 > Path : `/group/:groupId/article/:articleId`
 >
-> Headers to be sent :
+> Headers to be sent [![](https://badgen.net/badge/code/200/green)]() :
 >
 > ```json
 > {
@@ -271,6 +379,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   request_at: Date,
+>   id_group: Group,
+>   id_article: Article,
 > }
 > ```
 
@@ -296,6 +415,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/201/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
+> }
+> ```
 
 #### <a id="request-delete"></a>c. Delete - [DELETE]
 
@@ -310,6 +440,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
+> }
+> ```
 
 > Allows an editor to refused a request.
 >
@@ -322,6 +463,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
+> }
+> ```
 
 > Allows an autor to cancel a request.
 >
@@ -332,5 +484,16 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
 > }
 > ```
