@@ -27,6 +27,19 @@
 
 Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-h3-2022.herokuapp.com/api/v1)
 
+The different commands for the project :
+
+- Start the application : `npm run start`
+- Launch the tests of the application : `npm run test`
+- Launch the application tests and display their coverage : `npm run coverage`
+
+Data returned when error triggered on existed endpoints [![](https://badgen.net/badge/code/400/red)]() :
+```javascript
+{
+  error: String,
+}
+```
+
 ### <a id="users"></a>1.1.1. Users
 
 #### <a id="user-register"></a>a. Register - [POST]
@@ -46,6 +59,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >     role: String, // "author" | "editor"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/201/green)]() :
+>
+> ```javascript
+> {
+>     lastname: String,
+>     firstname: String,
+>     email: String,
+>     role: String, // "author" | "editor"
+> }
+> ```
 
 #### <a id="user-login"></a>b. Login - [POST]
 
@@ -59,6 +83,19 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > {
 >     email: String, // 255 characters maximum in email format
 >     password: String, // From 6 to 255 characters
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     lastname: String,
+>     firstname: String,
+>     email: String,
+>     role: String, // "author" | "editor"
+>     token: String,
 > }
 > ```
 
@@ -75,6 +112,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     lastname: String,
+>     firstname: String,
+>     email: String,
+>     role: String, // "author" | "editor"
+> }
+> ```
 
 ---
 
@@ -85,14 +133,71 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > Allows you to retrieve all articles.
 >
 > Path : `/article`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>   {
+>    _id: String,
+>    title: String,
+>    image: String,
+>    content: String,
+>    updated_at: Date,
+>    published_at: Date,
+>    published: String,
+>    id_group: Group,
+>    id_author: User,
+>    created_at: String,
+>   },
+>   ...
+> ]
+> ```
 
 > Allows you to retrieve one article.
 >
 > Path : `/article/:id`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
+> }
+> ```
 
 > Allows you to retrieve all the articles of a user.
 >
 > Path : `/user/articles`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>   {
+>    _id: String,
+>    title: String,
+>    image: String,
+>    content: String,
+>    updated_at: Date,
+>    published_at: Date,
+>    published: String,
+>    id_group: Group,
+>    id_author: String,
+>    created_at: String,
+>   },
+>   ...
+> ]
+> ```
 
 #### <a id="article-add"></a>b. Add - [POST]
 
@@ -115,6 +220,23 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/201/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
 > }
 > ```
 
@@ -141,6 +263,23 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
+> }
+> ```
 
 #### <a id="article-delete"></a>d. Delete - [DELETE]
 
@@ -155,6 +294,23 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   title: String,
+>   image: String,
+>   content: String,
+>   updated_at: Date,
+>   published_at: Date,
+>   published: String,
+>   id_group: Group,
+>   id_author: User,
+>   created_at: String,
+> }
+> ```
 
 ---
 
@@ -165,10 +321,35 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > Allows you to retrieve all groups of editors.
 >
 > Path : `/group`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>     {
+>       _id: String,
+>       title: String,
+>       articles: [Article],
+>       id_editor: String,
+>     },
+>     ...
+> ]
+> ```
 
 > Allows you to retrieve one group.
 >
 > Path : `/group/:id`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
+> }
+> ```
 
 > Retrieves all groups from the connected editor.
 >
@@ -180,6 +361,20 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > {
 >   "authorization": "Bearer <token>"
 > }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>     {
+>       _id: String,
+>       title: String,
+>       articles: [Article],
+>       id_editor: String,
+>     },
+>     ...
+> ]
 > ```
 >
 > Allows you to retrieve all the articles in a group.
@@ -207,6 +402,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [],
+>     id_editor: String,
+> }
+> ```
 
 #### <a id="group-update"></a>c. Update - [PUT]
 
@@ -229,6 +435,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
+> }
+> ```
 
 #### <a id="group-delete"></a>d. Delete - [DELETE]
 
@@ -243,16 +460,38 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
+> }
+> ```
 
 > Allows an editor to delete an article from one of his groups.
 >
 > Path : `/group/:groupId/article/:articleId`
 >
-> Headers to be sent :
+> Headers to be sent [![](https://badgen.net/badge/code/200/green)]() :
 >
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
 > }
 > ```
 
@@ -271,6 +510,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   request_at: Date,
+>   id_group: Group,
+>   id_article: Article,
 > }
 > ```
 
@@ -296,6 +546,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/201/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
+> }
+> ```
 
 #### <a id="request-delete"></a>c. Delete - [DELETE]
 
@@ -310,6 +571,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
+> }
+> ```
 
 > Allows an editor to refused a request.
 >
@@ -322,6 +594,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
+> }
+> ```
 
 > Allows an autor to cancel a request.
 >
@@ -332,5 +615,16 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>   _id: String,
+>   requested_at: Date,
+>   id_group: Group,
+>   id_article: Article,
 > }
 > ```
