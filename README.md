@@ -33,6 +33,13 @@ The different commands for the project :
 - Launch the tests of the application : `npm run test`
 - Launch the application tests and display their coverage : `npm run coverage`
 
+Data returned when error triggered on existed endpoints [![](https://badgen.net/badge/code/400/red)]() :
+```javascript
+{
+  error: String,
+}
+```
+
 ### <a id="users"></a>1.1.1. Users
 
 #### <a id="user-register"></a>a. Register - [POST]
