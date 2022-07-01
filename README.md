@@ -46,6 +46,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >     role: String, // "author" | "editor"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/201/green)]() :
+>
+> ```javascript
+> {
+>     lastname: String,
+>     firstname: String,
+>     email: String,
+>     role: String, // "author" | "editor"
+> }
+> ```
 
 #### <a id="user-login"></a>b. Login - [POST]
 
@@ -61,6 +72,19 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >     password: String, // From 6 to 255 characters
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     lastname: String,
+>     firstname: String,
+>     email: String,
+>     role: String, // "author" | "editor"
+>     token: String,
+> }
+> ```
 
 #### <a id="user-account"></a>c. My Account - [GET]
 
@@ -73,6 +97,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     lastname: String,
+>     firstname: String,
+>     email: String,
+>     role: String, // "author" | "editor"
 > }
 > ```
 
@@ -273,10 +308,35 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > Allows you to retrieve all groups of editors.
 >
 > Path : `/group`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>     {
+>       _id: String,
+>       title: String,
+>       articles: [Article],
+>       id_editor: String,
+>     },
+>     ...
+> ]
+> ```
 
 > Allows you to retrieve one group.
 >
 > Path : `/group/:id`
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
+> }
+> ```
 
 > Retrieves all groups from the connected editor.
 >
@@ -288,6 +348,20 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > {
 >   "authorization": "Bearer <token>"
 > }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> [
+>     {
+>       _id: String,
+>       title: String,
+>       articles: [Article],
+>       id_editor: String,
+>     },
+>     ...
+> ]
 > ```
 >
 > Allows you to retrieve all the articles in a group.
@@ -315,6 +389,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [],
+>     id_editor: String,
+> }
+> ```
 
 #### <a id="group-update"></a>c. Update - [PUT]
 
@@ -337,6 +422,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
+> }
+> ```
 
 #### <a id="group-delete"></a>d. Delete - [DELETE]
 
@@ -351,6 +447,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 >   "authorization": "Bearer <token>"
 > }
 > ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
+> }
+> ```
 
 > Allows an editor to delete an article from one of his groups.
 >
@@ -361,6 +468,17 @@ Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-
 > ```json
 > {
 >   "authorization": "Bearer <token>"
+> }
+> ```
+>
+> Data returned [![](https://badgen.net/badge/code/200/green)]() :
+>
+> ```javascript
+> {
+>     _id: String,
+>     title: String,
+>     articles: [Article],
+>     id_editor: String,
 > }
 > ```
 
