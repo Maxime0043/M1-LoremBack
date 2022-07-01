@@ -27,6 +27,12 @@
 
 Link : [projet-technique-h3-2022.herokuapp.com/api/v1](https://projet-technique-h3-2022.herokuapp.com/api/v1)
 
+The different commands for the project :
+
+- Start the application : `npm run start`
+- Launch the tests of the application : `npm run test`
+- Launch the application tests and display their coverage : `npm run coverage`
+
 ### <a id="users"></a>1.1.1. Users
 
 #### <a id="user-register"></a>a. Register - [POST]
